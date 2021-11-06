@@ -1,5 +1,6 @@
 #include "game.h"
 #include <stdio.h>
+#include <math.h>
 #include "../utils/logs.h"
 
 SDL_Surface* Game_init()
@@ -17,10 +18,16 @@ SDL_Surface* Game_init()
     return screen;
 }
 
-void Game_close()
+Timer Game_getTick() { return SDL_GetTicks(); }
+
+void Game_capFPS(Timer timer)
 {
-    SDL_Quit();
+    double deltaTime = SDL_GetTicks() - timer;
+    double frameRenderTime = 1000.0 / MAX_FPS;
+    if (deltaTime < frameRenderTime) SDL_Delay(floor(frameRenderTime - deltaTime));
 }
+
+void Game_close() { SDL_Quit(); }
 
 void Game_update(SDL_Surface* screen)
 {
