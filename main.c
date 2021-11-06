@@ -9,16 +9,23 @@ int main(int argc, char* argv[])
     Snake* snake = Snake_createSnake(START_X, START_Y);
     if (snake == NULL) return 1;
 
-    Timer update = 0;
+    // TODO remove
+    char msg[100] = "";
+
+    Timer frameTime = 0;
     SDL_Event event;
     while (!Game_exit(&event))
     {
-        update = Game_getTick();
+        frameTime = Game_getTicks();
         Game_drawBoard(screen);
-        Snake_moveSnake(screen, snake);
+        Snake_moveSnake(screen, snake, Game_getFPS(frameTime));
         Game_update(screen);
 
-        Game_capFPS(update);
+        Game_capFPS(frameTime);
+
+        // TODO remove
+        sprintf(msg, "%d", Game_getFPS(frameTime));
+        SDL_WM_SetCaption(msg, NULL);
     }
 
     Snake_destroySnake(snake);

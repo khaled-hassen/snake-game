@@ -3,7 +3,7 @@
 #include <SDL/SDL.h>
 #include <stdbool.h>
 
-#define MAX_FPS 10
+#define MAX_FPS 60
 
 #define SCREEN_HEIGHT 580
 #define SCREEN_WIDTH 720
@@ -16,8 +16,11 @@ typedef Uint32 Timer;
 
 SDL_Surface* Game_init();
 
-Timer Game_getTick();
-void Game_capFPS(Timer timer);
+Timer Game_getTicks();
+
+Timer Game_getFPS(Timer frameTime);
+
+void Game_capFPS(Timer frameTime);
 
 void Game_drawBoard(SDL_Surface* screen);
 

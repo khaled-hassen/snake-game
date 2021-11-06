@@ -18,11 +18,18 @@ SDL_Surface* Game_init()
     return screen;
 }
 
-Timer Game_getTick() { return SDL_GetTicks(); }
+Timer Game_getTicks() { return SDL_GetTicks(); }
 
-void Game_capFPS(Timer timer)
+Timer Game_getFPS(Timer frameTime)
 {
-    double deltaTime = SDL_GetTicks() - timer;
+    Timer deltaTime = Game_getTicks() - frameTime;
+    return floor(1000.0 / deltaTime);
+}
+
+void Game_capFPS(Timer frameTime)
+{
+    // limit the game frames per seconds
+    Timer deltaTime = SDL_GetTicks() - frameTime;
     double frameRenderTime = 1000.0 / MAX_FPS;
     if (deltaTime < frameRenderTime) SDL_Delay(floor(frameRenderTime - deltaTime));
 }
@@ -61,5 +68,7 @@ void Game_drawBoard(SDL_Surface* screen)
     SDL_Rect rightWall = { SCREEN_WIDTH - WALL_THICKNESS, 0, WALL_THICKNESS, SCREEN_HEIGHT };
     SDL_FillRect(screen, &rightWall, wallColor);
 }
+
+
 
 

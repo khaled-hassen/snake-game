@@ -24,8 +24,9 @@ void Snake_destroySnake(Snake* snake)
     free(snake);
 }
 
-void Snake_moveSnake(SDL_Surface* screen, Snake* snake)
+void Snake_moveSnake(SDL_Surface* screen, Snake* snake, Timer fps)
 {
+    // TODO make frame independent movement
     Uint32 color = SDL_MapRGB(screen->format, 0, 0xFF, 0);
     snake->shape.x += snake->speed;
     SDL_FillRect(screen, &snake->shape, color);
