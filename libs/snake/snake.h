@@ -3,7 +3,7 @@
 #include <SDL/SDL.h>
 
 #define SNAKE_WIDTH 15
-#define SNAKE_BASE_SPEED 1
+#define SNAKE_BASE_SPEED 100
 
 typedef Uint32 Timer;
 

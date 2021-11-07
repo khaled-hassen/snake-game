@@ -13,19 +13,23 @@ int main(int argc, char* argv[])
     char msg[100] = "";
 
     Timer frameTime = 0;
+    Timer fps = MAX_FPS;
     SDL_Event event;
     while (!Game_exit(&event))
     {
         frameTime = Game_getTicks();
+
         Game_drawBoard(screen);
-        Snake_moveSnake(screen, snake, Game_getFPS(frameTime));
+        Snake_moveSnake(screen, snake, fps);
         Game_update(screen);
 
         Game_capFPS(frameTime);
 
         // TODO remove
-        sprintf(msg, "%d", Game_getFPS(frameTime));
+        sprintf(msg, "%d", fps);
         SDL_WM_SetCaption(msg, NULL);
+
+        fps = Game_getFPS(frameTime);
     }
 
     Snake_destroySnake(snake);
