@@ -15,12 +15,18 @@ int main(int argc, char* argv[])
     Timer frameTime = 0;
     Timer fps = MAX_FPS;
     SDL_Event event;
-    while (!Game_exit(&event))
-    {
-        frameTime = Game_getTicks();
+    bool quit = false;
 
+    while (true)
+    {
+        while (Game_getEvents(&event)) quit = Game_exited(event);
+        if (quit) break;
+
+        frameTime = Game_getTicks();
         Game_drawBoard(screen);
-        Snake_moveSnake(screen, snake, fps);
+
+        Vector direction = Game_handleInput(event);
+        Snake_moveSnake(screen, snake, direction, fps);
         Game_update(screen);
 
         Game_capFPS(frameTime);

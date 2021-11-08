@@ -2,6 +2,7 @@
 
 #include <SDL/SDL.h>
 #include <stdbool.h>
+#include "../utils/types.h"
 
 #define MAX_FPS 60
 
@@ -11,8 +12,6 @@
 
 #define START_X WALL_THICKNESS
 #define START_Y WALL_THICKNESS
-
-typedef Uint32 Timer;
 
 SDL_Surface* Game_init();
 
@@ -26,6 +25,10 @@ void Game_drawBoard(SDL_Surface* screen);
 
 void Game_update(SDL_Surface* screen);
 
-bool Game_exit(SDL_Event* event);
+int Game_getEvents(SDL_Event* event);
+
+Vector Game_handleInput(SDL_Event event);
+
+bool Game_exited(SDL_Event event);
 
 void Game_close();

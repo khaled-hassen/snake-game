@@ -41,10 +41,41 @@ void Game_update(SDL_Surface* screen)
     if (SDL_Flip(screen) < 0) LOG_SDL_ERROR("Cannot update screen");
 }
 
-bool Game_exit(SDL_Event* event)
+int Game_getEvents(SDL_Event* event) { return SDL_PollEvent(event); }
+
+bool Game_exited(SDL_Event event) { return event.type == SDL_QUIT; }
+
+Vector Game_handleInput(SDL_Event event)
 {
-    while (SDL_PollEvent(event)) if (event->type == SDL_QUIT) return true;
-    return false;
+    Vector direction = { 0, 0 };
+    if (event.type != SDL_KEYDOWN) return direction;
+
+    switch (event.key.keysym.sym)
+    {
+        case SDLK_w:
+            direction.x = 0;
+            direction.y = -1;
+            break;
+
+        case SDLK_s:
+            direction.x = 0;
+            direction.y = 1;
+            break;
+
+        case SDLK_a:
+            direction.x = -1;
+            direction.y = 0;
+            break;
+
+        case SDLK_d:
+            direction.x = 1;
+            direction.y = 0;
+            break;
+        default:
+            break;
+    }
+
+    return direction;
 }
 
 
@@ -68,6 +99,8 @@ void Game_drawBoard(SDL_Surface* screen)
     SDL_Rect rightWall = { SCREEN_WIDTH - WALL_THICKNESS, 0, WALL_THICKNESS, SCREEN_HEIGHT };
     SDL_FillRect(screen, &rightWall, wallColor);
 }
+
+
 
 
 
