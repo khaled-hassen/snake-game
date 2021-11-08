@@ -1,5 +1,8 @@
 #include "libs/game/game.h"
 #include "libs/snake/snake.h"
+#include "libs/apple/apple.h"
+#include "libs/utils/math/math.h"
+
 
 int main(int argc, char* argv[])
 {
@@ -12,23 +15,33 @@ int main(int argc, char* argv[])
     // TODO remove
     char msg[100] = "";
 
+    SDL_Rect walls[4];
     Timer frameTime = 0;
     Timer fps = MAX_FPS;
     SDL_Event event;
     bool quit = false;
+    bool gameOver = false;
+    Vector direction;
+    SDL_Rect movingArea;
 
+    // needs to be initialized in order to randomly generate the apples
+    Math_initSeed();
     while (true)
     {
         while (Game_getEvents(&event)) quit = Game_exited(event);
         if (quit) break;
 
         frameTime = Game_getTicks();
-        Game_drawBoard(screen);
+        movingArea = Game_drawBoard(screen, walls);
+        Apple_generate(screen, movingArea);
 
-        Vector direction = Game_handleInput(event);
+        if (!gameOver) direction = Game_handleInput(event);
+        else Snake_stop(snake);
+
         Snake_moveSnake(screen, snake, direction, fps);
-        Game_update(screen);
+        gameOver = Snake_hitWalls(snake, walls);
 
+        Game_update(screen);
         Game_capFPS(frameTime);
 
         // TODO remove

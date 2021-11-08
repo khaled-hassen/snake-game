@@ -78,10 +78,8 @@ Vector Game_handleInput(SDL_Event event)
     return direction;
 }
 
-
-void Game_drawBoard(SDL_Surface* screen)
+SDL_Rect Game_drawBoard(SDL_Surface* screen, SDL_Rect walls[4])
 {
-    // draws the game grid
     SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
 
     // drawing the walls
@@ -98,6 +96,15 @@ void Game_drawBoard(SDL_Surface* screen)
 
     SDL_Rect rightWall = { SCREEN_WIDTH - WALL_THICKNESS, 0, WALL_THICKNESS, SCREEN_HEIGHT };
     SDL_FillRect(screen, &rightWall, wallColor);
+
+    walls[TOP] = topWall;
+    walls[BOTTOM] = bottomWall;
+    walls[LEFT] = leftWall;
+    walls[RIGHT] = rightWall;
+
+    SDL_Rect movingArea = { WALL_THICKNESS, WALL_THICKNESS, SCREEN_WIDTH - 2 * WALL_THICKNESS,
+                            SCREEN_HEIGHT - 2 * WALL_THICKNESS };
+    return movingArea;
 }
 
 
