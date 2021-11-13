@@ -22,7 +22,8 @@ int main(int argc, char* argv[])
     bool quit = false;
     bool gameOver = false;
     Vector direction;
-    SDL_Rect movingArea;
+    SDL_Rect movingArea = Game_drawBoard(screen, walls);
+    SDL_Rect apple = Apple_generate(movingArea);
 
     // needs to be initialized in order to randomly generate the apples
     Math_initSeed();
@@ -33,7 +34,13 @@ int main(int argc, char* argv[])
 
         frameTime = Game_getTicks();
         movingArea = Game_drawBoard(screen, walls);
-        Apple_generate(screen, movingArea);
+        Apple_draw(screen, apple);
+
+        if (Snake_detectCollision(snake, apple))
+        {
+            Snake_increaseScore(snake);
+            apple = Apple_generate(movingArea);
+        }
 
         if (!gameOver) direction = Game_handleInput(event);
         else Snake_stop(snake);
@@ -45,9 +52,8 @@ int main(int argc, char* argv[])
         Game_capFPS(frameTime);
 
         // TODO remove
-        sprintf(msg, "%d", fps);
+        sprintf(msg, "FPS: %d   Score: %d", fps, snake->score);
         SDL_WM_SetCaption(msg, NULL);
-
         fps = Game_getFPS(frameTime);
     }
 

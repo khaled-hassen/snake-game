@@ -6,11 +6,13 @@
 
 #define SNAKE_WIDTH 15
 #define SNAKE_BASE_SPEED 100
+#define MAX_SNAKE_SPEED 400
 
 typedef struct Snake
 {
     SDL_Rect shape;
     int length;
+    int score;
     int speed;
     Vector velocity;
 } Snake;
@@ -27,6 +29,9 @@ void Snake_destroySnake(Snake* snake);
 // check if snake collides with other or not
 // return result
 bool Snake_detectCollision(Snake* snake, SDL_Rect other);
+
+// increases the snake's score (normally when he eats an apple)
+void Snake_increaseScore(Snake* snake);
 
 // check if the snake hits a wall or not
 // return the state
