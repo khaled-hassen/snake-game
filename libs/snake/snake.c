@@ -13,9 +13,9 @@ Snake* Snake_createSnake(int x, int y)
     }
 
     snake->length = 1;
-    Vector velocity = { SNAKE_BASE_SPEED, 0 };
+    snake->speed = CELL_SIZE;
+    Vector velocity = { snake->speed, 0 };
     snake->velocity = velocity;
-    snake->speed = SNAKE_BASE_SPEED;
     SDL_Rect shape = { x, y, SNAKE_WIDTH, SNAKE_WIDTH };
     snake->shape = shape;
     snake->score = 0;
@@ -28,7 +28,7 @@ void Snake_destroySnake(Snake* snake)
     free(snake);
 }
 
-void Snake_moveSnake(SDL_Surface* screen, Snake* snake, Vector direction, Timer fps)
+void Snake_moveSnake(SDL_Surface* screen, Snake* snake, Vector direction, Timer ticks)
 {
     Uint32 color = SDL_MapRGB(screen->format, 0, 0xFF, 0);
 
@@ -38,22 +38,9 @@ void Snake_moveSnake(SDL_Surface* screen, Snake* snake, Vector direction, Timer 
         snake->velocity.x = snake->speed * direction.x;
         snake->velocity.y = snake->speed * direction.y;
     }
-    else
-    {
-        // keep the velocity in sync with speed
-        if (snake->velocity.x != 0)
-            snake->velocity.x = snake->velocity.x > 0 ? snake->speed : -snake->speed;
 
-        if (snake->velocity.y != 0)
-            snake->velocity.y = snake->velocity.y > 0 ? snake->speed : -snake->speed;
-    }
-
-    // get the x and y movement per frame
-    Sint16 deltaX = (Sint16) round((double) snake->velocity.x / fps);
-    Sint16 deltaY = (Sint16) round((double) snake->velocity.y / fps);
-
-    snake->shape.x += deltaX;
-    snake->shape.y += deltaY;
+    snake->shape.x += snake->velocity.x;
+    snake->shape.y += snake->velocity.y;
 
     SDL_FillRect(screen, &snake->shape, color);
 }
@@ -89,5 +76,5 @@ void Snake_stop(Snake* snake)
 void Snake_increaseScore(Snake* snake)
 {
     snake->score += 10;
-    snake->speed = snake->speed > MAX_SNAKE_SPEED ? MAX_SNAKE_SPEED : snake->speed + 10;
+    // snake->speed = snake->speed > MAX_SNAKE_SPEED ? MAX_SNAKE_SPEED : snake->speed + 10;
 }

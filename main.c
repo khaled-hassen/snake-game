@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
         if (!gameOver) direction = Game_handleInput(event);
         else Snake_stop(snake);
 
-        Snake_moveSnake(screen, snake, direction, fps);
+        Snake_moveSnake(screen, snake, direction, Game_getTicks());
         gameOver = Snake_hitWalls(snake, walls);
 
         Game_update(screen);

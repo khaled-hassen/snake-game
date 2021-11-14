@@ -22,7 +22,7 @@ typedef struct Snake
 Snake* Snake_createSnake(int x, int y);
 
 // move the snake according the direction
-void Snake_moveSnake(SDL_Surface* screen, Snake* snake, Vector direction, Timer fps);
+void Snake_moveSnake(SDL_Surface* screen, Snake* snake, Vector direction, Timer ticks);
 
 // free the snake from memory
 void Snake_destroySnake(Snake* snake);
