@@ -3,13 +3,12 @@
 #include <SDL/SDL.h>
 #include <stdbool.h>
 #include "../utils/types.h"
+#include "../utils/config.h"
 
-#define MAX_FPS 60
+#define SCREEN_WIDTH 40 * CELL_SIZE
+#define SCREEN_HEIGHT 35 * CELL_SIZE
 
-#define SCREEN_HEIGHT 580
-#define SCREEN_WIDTH 720
-#define WALL_THICKNESS 15
-
+#define WALL_THICKNESS CELL_SIZE
 #define START_X WALL_THICKNESS
 #define START_Y WALL_THICKNESS
 

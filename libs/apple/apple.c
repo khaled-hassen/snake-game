@@ -1,15 +1,17 @@
 #include "apple.h"
 #include "../utils/math/math.h"
 
-SDL_Rect Apple_generate(SDL_Rect area)
+SDL_Rect Apple_spawn(SDL_Rect area)
 {
-    int endX = area.x + area.w - APPLE_DIM;
-    int endY = area.y + area.h - APPLE_DIM;
+    // get the number of horizontal and vertical cells
+    int hCells = area.w / CELL_SIZE;
+    int vCells = area.h / CELL_SIZE;
 
-    int randomX = Math_randomInt(area.x, endX);
-    int randomY = Math_randomInt(area.y, endY);
+    // generate a random cell x and y used to spawn the apple
+    int randomX = Math_randomInt(1, hCells) * CELL_SIZE;
+    int randomY = Math_randomInt(1, vCells) * CELL_SIZE;
 
-    SDL_Rect apple = { randomX, randomY, APPLE_DIM, APPLE_DIM };
+    SDL_Rect apple = { randomX, randomY, APPLE_SIZE, APPLE_SIZE };
     return apple;
 }
 

@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
     bool gameOver = false;
     Vector direction;
     SDL_Rect movingArea = Game_drawBoard(screen, walls);
-    SDL_Rect apple = Apple_generate(movingArea);
+    SDL_Rect apple = Apple_spawn(movingArea);
 
     // needs to be initialized in order to randomly generate the apples
     Math_initSeed();
@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
         if (Snake_detectCollision(snake, apple))
         {
             Snake_increaseScore(snake);
-            apple = Apple_generate(movingArea);
+            apple = Apple_spawn(movingArea);
         }
 
         if (!gameOver) direction = Game_handleInput(event);

@@ -1,10 +1,11 @@
 #pragma once
 
 #include <SDL/SDL.h>
-#include "../utils/types.h"
 #include <stdbool.h>
+#include "../utils/types.h"
+#include "../utils/config.h"
 
-#define SNAKE_WIDTH 15
+#define SNAKE_WIDTH CELL_SIZE
 #define SNAKE_BASE_SPEED 100
 #define MAX_SNAKE_SPEED 400
 

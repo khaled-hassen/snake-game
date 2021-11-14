@@ -104,6 +104,22 @@ SDL_Rect Game_drawBoard(SDL_Surface* screen, SDL_Rect walls[4])
 
     SDL_Rect movingArea = { WALL_THICKNESS, WALL_THICKNESS, SCREEN_WIDTH - 2 * WALL_THICKNESS,
                             SCREEN_HEIGHT - 2 * WALL_THICKNESS };
+
+    /*TODO remove*/
+    int rows = movingArea.h / CELL_SIZE;
+    int columns = movingArea.w / CELL_SIZE;
+    Uint32 c2C394B = SDL_MapRGB(screen->format, 0x2C, 0x39, 0x4B);
+    Uint32 c787A91 = SDL_MapRGB(screen->format, 0x78, 0x7A, 0x91);
+
+    for (int i = 0; i < rows; ++i)
+    {
+        for (int j = 0; j < columns; ++j)
+        {
+            SDL_Rect rowRect = { movingArea.x + j * CELL_SIZE, movingArea.y + i * CELL_SIZE, CELL_SIZE, CELL_SIZE };
+            SDL_FillRect(screen, &rowRect, (i + j) % 2 == 0 ? c2C394B : c787A91);
+        }
+    }
+    /*TODO remove*/
     return movingArea;
 }
 
