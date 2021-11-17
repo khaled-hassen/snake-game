@@ -1,7 +1,7 @@
 #include "game.h"
 #include <stdio.h>
 #include <math.h>
-#include "../utils/logs.h"
+#include "../../debug/debug.h"
 
 SDL_Surface* Game_init()
 {
@@ -19,12 +19,6 @@ SDL_Surface* Game_init()
 }
 
 Timer Game_getTicks() { return SDL_GetTicks(); }
-
-Timer Game_getFPS(Timer frameTime)
-{
-    Timer deltaTime = Game_getTicks() - frameTime;
-    return floor(1000.0 / deltaTime);
-}
 
 void Game_capFPS(Timer frameTime)
 {

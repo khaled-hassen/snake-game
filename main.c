@@ -2,6 +2,7 @@
 #include "libs/snake/snake.h"
 #include "libs/apple/apple.h"
 #include "libs/utils/math/math.h"
+#include "debug/debug.h"
 
 int main(int argc, char* argv[])
 {
@@ -10,9 +11,6 @@ int main(int argc, char* argv[])
 
     Snake* snake = Snake_createSnake(START_X, START_Y);
     if (snake == NULL) return 1;
-
-    // TODO remove
-    char msg[100] = "";
 
     SDL_Rect walls[4];
     Timer frameTime = 0;
@@ -54,9 +52,7 @@ int main(int argc, char* argv[])
         // to prevent the frames value from overflowing
         frames %= MAX_FPS;
 
-        // TODO remove
-        sprintf(msg, "FPS: %d   Score: %d", Game_getFPS(frameTime), snake->score);
-        SDL_WM_SetCaption(msg, NULL);
+        DEBUG_FPS_SCORE(frameTime, snake->score);
     }
 
     Snake_destroySnake(snake);

@@ -19,9 +19,6 @@ SDL_Surface* Game_init();
 // return the time since the game starts in ms
 Timer Game_getTicks();
 
-// return the current game frames per second
-Timer Game_getFPS(Timer frameTime);
-
 // cap the game's fps to prevent over-rendering
 void Game_capFPS(Timer frameTime);
 

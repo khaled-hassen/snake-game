@@ -1,7 +1,7 @@
 #include <math.h>
 #include "snake.h"
 #include "stdlib.h"
-#include "../utils/logs.h"
+#include "../../debug/debug.h"
 
 Snake* Snake_createSnake(int x, int y)
 {
