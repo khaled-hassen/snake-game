@@ -80,5 +80,4 @@ void Snake_stop(Snake* snake)
 void Snake_increaseScore(Snake* snake)
 {
     snake->score += 10;
-    // snake->speed = snake->speed > MAX_SNAKE_SPEED ? MAX_SNAKE_SPEED : snake->speed + 10;
 }

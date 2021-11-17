@@ -32,6 +32,7 @@ int main(int argc, char* argv[])
         frames++;
         frameTime = Game_getTicks();
         movingArea = Game_drawBoard(screen, walls);
+        DEBUG_BOARD(screen, movingArea);
         Apple_draw(screen, apple);
 
         if (Snake_detectCollision(snake, apple))
