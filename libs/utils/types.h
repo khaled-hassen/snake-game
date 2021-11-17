@@ -2,13 +2,13 @@
 
 typedef Uint32 Timer;
 
-typedef struct Vector
+typedef struct
 {
     int x;
     int y;
 } Vector;
 
-typedef enum Position
+typedef enum
 {
     TOP, BOTTOM, LEFT, RIGHT
 } Position;

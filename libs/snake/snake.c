@@ -28,21 +28,25 @@ void Snake_destroySnake(Snake* snake)
     free(snake);
 }
 
-void Snake_moveSnake(SDL_Surface* screen, Snake* snake, Vector direction, Timer ticks)
+void Snake_moveSnake(SDL_Surface* screen, Snake* snake, int frames)
 {
-    Uint32 color = SDL_MapRGB(screen->format, 0, 0xFF, 0);
+    // if (1/CELLS_PER_SECOND) has passed move the snake
+    if ((frames % (MAX_FPS / CELLS_PER_SECOND)) == 0)
+    {
+        snake->shape.x += snake->velocity.x;
+        snake->shape.y += snake->velocity.y;
+    }
+    SDL_FillRect(screen, &snake->shape, SDL_MapRGB(screen->format, 0, 0xFF, 0));
+}
 
+void Snake_turn(Snake* snake, Vector direction)
+{
     if (direction.x != 0 || direction.y != 0)
     {
         // change the snake velocity which depends on speed and direction
         snake->velocity.x = snake->speed * direction.x;
         snake->velocity.y = snake->speed * direction.y;
     }
-
-    snake->shape.x += snake->velocity.x;
-    snake->shape.y += snake->velocity.y;
-
-    SDL_FillRect(screen, &snake->shape, color);
 }
 
 bool Snake_detectCollision(Snake* snake, SDL_Rect other)

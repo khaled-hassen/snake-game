@@ -3,7 +3,6 @@
 #include "libs/apple/apple.h"
 #include "libs/utils/math/math.h"
 
-
 int main(int argc, char* argv[])
 {
     SDL_Surface* screen = Game_init();
@@ -17,13 +16,13 @@ int main(int argc, char* argv[])
 
     SDL_Rect walls[4];
     Timer frameTime = 0;
-    Timer fps = MAX_FPS;
     SDL_Event event;
     bool quit = false;
     bool gameOver = false;
     Vector direction;
     SDL_Rect movingArea = Game_drawBoard(screen, walls);
     SDL_Rect apple = Apple_spawn(movingArea);
+    int frames = 0;
 
     // needs to be initialized in order to randomly generate the apples
     Math_initSeed();
@@ -32,6 +31,7 @@ int main(int argc, char* argv[])
         while (Game_getEvents(&event)) quit = Game_exited(event);
         if (quit) break;
 
+        frames++;
         frameTime = Game_getTicks();
         movingArea = Game_drawBoard(screen, walls);
         Apple_draw(screen, apple);
@@ -45,16 +45,18 @@ int main(int argc, char* argv[])
         if (!gameOver) direction = Game_handleInput(event);
         else Snake_stop(snake);
 
-        Snake_moveSnake(screen, snake, direction, Game_getTicks());
+        Snake_turn(snake, direction);
+        Snake_moveSnake(screen, snake, frames);
         gameOver = Snake_hitWalls(snake, walls);
 
         Game_update(screen);
         Game_capFPS(frameTime);
+        // to prevent the frames value from overflowing
+        frames %= MAX_FPS;
 
         // TODO remove
-        sprintf(msg, "FPS: %d   Score: %d", fps, snake->score);
+        sprintf(msg, "FPS: %d   Score: %d", Game_getFPS(frameTime), snake->score);
         SDL_WM_SetCaption(msg, NULL);
-        fps = Game_getFPS(frameTime);
     }
 
     Snake_destroySnake(snake);

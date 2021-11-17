@@ -124,7 +124,7 @@ SDL_Rect Game_drawBoard(SDL_Surface* screen, SDL_Rect walls[4])
                             SCREEN_HEIGHT - 2 * WALL_THICKNESS };
 
 
-    // Game_debugBoard(screen, movingArea);
+    Game_debugBoard(screen, movingArea);
     return movingArea;
 }
 

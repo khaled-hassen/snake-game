@@ -5,8 +5,8 @@
 #include "../utils/types.h"
 #include "../utils/config.h"
 
-#define SCREEN_WIDTH 40 * CELL_SIZE
-#define SCREEN_HEIGHT 35 * CELL_SIZE
+#define SCREEN_WIDTH (H_CELLS * CELL_SIZE)
+#define SCREEN_HEIGHT (V_CELLS * CELL_SIZE)
 
 #define WALL_THICKNESS CELL_SIZE
 #define START_X WALL_THICKNESS

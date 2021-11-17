@@ -6,10 +6,9 @@
 #include "../utils/config.h"
 
 #define SNAKE_WIDTH CELL_SIZE
-#define SNAKE_BASE_SPEED 100
-#define MAX_SNAKE_SPEED 400
+#define CELLS_PER_SECOND 4
 
-typedef struct Snake
+typedef struct
 {
     SDL_Rect shape;
     int length;
@@ -21,8 +20,11 @@ typedef struct Snake
 // create the snake
 Snake* Snake_createSnake(int x, int y);
 
-// move the snake according the direction
-void Snake_moveSnake(SDL_Surface* screen, Snake* snake, Vector direction, Timer ticks);
+// move the snake according the velocity
+void Snake_moveSnake(SDL_Surface* screen, Snake* snake, int frames);
+
+// turn the snake to the specified direction
+void Snake_turn(Snake* snake, Vector direction);
 
 // free the snake from memory
 void Snake_destroySnake(Snake* snake);
