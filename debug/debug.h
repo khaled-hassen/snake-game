@@ -30,7 +30,7 @@ SDL_WM_SetCaption(debugMsg, NULL);
 #define LOG_ERROR(error)
 #define LOG_SDL_ERROR(error)
 #define LOG_TTF_ERROR(error)
-#define DEBUG_FPS(frameTime, score)
+#define DEBUG_FPS(frameTime)
 #define DEBUG_BOARD(screen, area)
 
 #endif
