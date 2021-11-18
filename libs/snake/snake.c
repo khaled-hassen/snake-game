@@ -3,7 +3,7 @@
 #include "stdlib.h"
 #include "../../debug/debug.h"
 
-Snake* Snake_createSnake(int x, int y)
+Snake* Snake_create(int x, int y)
 {
     Snake* snake = (Snake*) malloc(sizeof(Snake));
     if (snake == NULL)
@@ -23,12 +23,9 @@ Snake* Snake_createSnake(int x, int y)
     return snake;
 }
 
-void Snake_destroySnake(Snake* snake)
-{
-    free(snake);
-}
+void Snake_destroy(Snake* snake) { free(snake); }
 
-void Snake_moveSnake(SDL_Surface* screen, Snake* snake, int frames)
+void Snake_move(SDL_Surface* screen, Snake* snake, int frames)
 {
     // if (1/CELLS_PER_SECOND) has passed move the snake
     if ((frames % (MAX_FPS / CELLS_PER_SECOND)) == 0)

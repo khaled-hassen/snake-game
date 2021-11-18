@@ -6,24 +6,30 @@
 
 int main(int argc, char* argv[])
 {
-    SDL_Surface* screen = Game_init();
-    if (screen == NULL) return 1;
-
-    Snake* snake = Snake_createSnake(START_X, START_Y);
-    if (snake == NULL) return 1;
+    Game game = Game_init();
+    if (game.screen == NULL) return 1;
 
     SDL_Rect walls[4];
-    Timer frameTime = 0;
-    SDL_Event event;
+    SDL_Rect movingArea = Game_drawBoard(game.screen, walls);
+
+    Snake* snake = Snake_create(movingArea.x, movingArea.y);
+    if (snake == NULL) return 1;
+
+    Apple* apple = Apple_Create();
+    if (snake == NULL) return 1;
+
     bool quit = false;
     bool gameOver = false;
     Vector direction;
-    SDL_Rect movingArea = Game_drawBoard(screen, walls);
-    SDL_Rect apple = Apple_spawn(movingArea);
+
+    Timer frameTime = 0;
     int frames = 0;
+    SDL_Event event;
 
     // needs to be initialized in order to randomly generate the apples
     Math_initSeed();
+    Apple_generatePosition(apple, movingArea);
+
     while (true)
     {
         while (Game_getEvents(&event)) quit = Game_exited(event);
@@ -31,33 +37,35 @@ int main(int argc, char* argv[])
 
         frames++;
         frameTime = Game_getTicks();
-        movingArea = Game_drawBoard(screen, walls);
-        DEBUG_BOARD(screen, movingArea);
-        Apple_draw(screen, apple);
+        movingArea = Game_drawBoard(game.screen, walls);
+        DEBUG_BOARD(game.screen, movingArea);
+        Apple_draw(game.screen, apple);
 
-        if (Snake_detectCollision(snake, apple))
+        if (Snake_detectCollision(snake, apple->shape))
         {
             Snake_increaseScore(snake);
-            apple = Apple_spawn(movingArea);
+            Apple_generatePosition(apple, movingArea);
         }
 
         if (!gameOver) direction = Game_handleInput(event);
         else Snake_stop(snake);
 
         Snake_turn(snake, direction);
-        Snake_moveSnake(screen, snake, frames);
+        Snake_move(game.screen, snake, frames);
         gameOver = Snake_hitWalls(snake, walls);
 
-        Game_update(screen);
+        Game_renderScore(game, snake->score);
+        Game_update(game.screen);
         Game_capFPS(frameTime);
         // to prevent the frames value from overflowing
         frames %= MAX_FPS;
 
-        DEBUG_FPS_SCORE(frameTime, snake->score);
+        DEBUG_FPS(frameTime);
     }
 
-    Snake_destroySnake(snake);
-    Game_close();
+    Snake_destroy(snake);
+    Apple_Destroy(apple);
+    Game_close(game);
 
     return 0;
 }

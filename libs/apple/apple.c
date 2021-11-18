@@ -1,21 +1,53 @@
 #include "apple.h"
+#include <stdlib.h>
+#include <stdbool.h>
 #include "../utils/math/math.h"
+#include "../../debug/debug.h"
 
-SDL_Rect Apple_spawn(SDL_Rect area)
+Apple* Apple_Create()
 {
-    // get the number of horizontal and vertical cells
-    int hCells = area.w / CELL_SIZE;
-    int vCells = area.h / CELL_SIZE;
+    Apple* apple = (Apple*) malloc(sizeof(Apple));
+    if (apple == NULL)
+    {
+        LOG_ERROR("Cannot create apple");
+        return NULL;
+    }
 
-    // generate a random cell x and y used to spawn the apple
-    int randomX = Math_randomInt(1, hCells) * CELL_SIZE;
-    int randomY = Math_randomInt(1, vCells) * CELL_SIZE;
+    apple->shape.w = APPLE_SIZE;
+    apple->shape.h = APPLE_SIZE;
+    apple->lastPosition.x = -1;
+    apple->lastPosition.y = -1;
 
-    SDL_Rect apple = { randomX, randomY, APPLE_SIZE, APPLE_SIZE };
     return apple;
 }
 
-void Apple_draw(SDL_Surface* screen, SDL_Rect apple)
+void Apple_generatePosition(Apple* apple, SDL_Rect area)
 {
-    SDL_FillRect(screen, &apple, SDL_MapRGB(screen->format, 0xFF, 0, 0));
+    // get the number of horizontal and vertical cells contained in the area
+    int hCells = area.w / CELL_SIZE;
+    int vCells = area.h / CELL_SIZE;
+
+    // get from which xCell and yCell the area starts
+    int xCells = area.x / CELL_SIZE;
+    int yCells = area.y / CELL_SIZE;
+
+    // generate a random cell x and y used to spawn the apple (different from last position)
+    int randomX = 0, randomY = 0;
+    do
+    {
+        randomX = Math_randomInt(xCells, hCells + xCells - 1) * CELL_SIZE;
+        randomY = Math_randomInt(yCells, vCells + yCells - 1) * CELL_SIZE;
+    } while ((randomX == apple->lastPosition.x) && (randomY == apple->lastPosition.y));
+
+    apple->shape.x = randomX;
+    apple->shape.y = randomY;
+    apple->lastPosition.x = randomX;
+    apple->lastPosition.y = randomY;
 }
+
+void Apple_draw(SDL_Surface* screen, Apple* apple)
+{
+    SDL_FillRect(screen, &apple->shape, SDL_MapRGB(screen->format, 0xFF, 0, 0));
+}
+
+void Apple_Destroy(Apple* apple) { free(apple); }

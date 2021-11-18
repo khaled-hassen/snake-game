@@ -18,16 +18,16 @@ typedef struct
 } Snake;
 
 // create the snake
-Snake* Snake_createSnake(int x, int y);
+Snake* Snake_create(int x, int y);
 
 // move the snake according the velocity
-void Snake_moveSnake(SDL_Surface* screen, Snake* snake, int frames);
+void Snake_move(SDL_Surface* screen, Snake* snake, int frames);
 
 // turn the snake to the specified direction
 void Snake_turn(Snake* snake, Vector direction);
 
 // free the snake from memory
-void Snake_destroySnake(Snake* snake);
+void Snake_destroy(Snake* snake);
 
 // check if snake collides with other or not
 // return result

@@ -1,20 +1,27 @@
 #pragma once
 
 #include <SDL/SDL.h>
+#include <SDL/SDL_ttf.h>
 #include <stdbool.h>
 #include "../utils/types.h"
 #include "../utils/config.h"
 
-#define SCREEN_WIDTH (H_CELLS * CELL_SIZE)
-#define SCREEN_HEIGHT (V_CELLS * CELL_SIZE)
+#define SCREEN_WIDTH (WIDTH_IN_CELLS * CELL_SIZE)
+#define SCREEN_HEIGHT (HEIGHT_IN_CELLS * CELL_SIZE)
 
 #define WALL_THICKNESS CELL_SIZE
-#define START_X WALL_THICKNESS
-#define START_Y WALL_THICKNESS
 
-// initialize the game
-// returns the game screen
-SDL_Surface* Game_init();
+typedef Uint32 Timer;
+
+typedef struct {
+    SDL_Surface* screen;
+    TTF_Font* font;
+    SDL_Surface* message;
+} Game;
+
+// initialize the game and sdl_ttf
+// returns the game screen and font
+Game Game_init();
 
 // return the time since the game starts in ms
 Timer Game_getTicks();
@@ -25,6 +32,9 @@ void Game_capFPS(Timer frameTime);
 // draw the game board
 // return the walls and the board moving area
 SDL_Rect Game_drawBoard(SDL_Surface* screen, SDL_Rect walls[4]);
+
+// render the snake score
+void Game_renderScore(Game game, int score);
 
 // render changes
 void Game_update(SDL_Surface* screen);
@@ -42,4 +52,4 @@ Vector Game_handleInput(SDL_Event event);
 bool Game_exited(SDL_Event event);
 
 // close the game and free the allocated memory
-void Game_close();
+void Game_close(Game game);

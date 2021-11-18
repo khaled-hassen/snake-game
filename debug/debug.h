@@ -4,6 +4,7 @@
 
 #define LOG_ERROR(error) fprintf(stderr, "[ERROR] %s\n", error)
 #define LOG_SDL_ERROR(error) fprintf(stderr, "[ERROR] %s\n[SDL ERROR] %s\n", error, SDL_GetError())
+#define LOG_TTF_ERROR(error) fprintf(stderr, "[ERROR] %s\n[TTF ERROR] %s\n", error, TTF_GetError())
 
 #define DEBUG_BOARD(screen, area) \
 int rows = area.h / CELL_SIZE;\
@@ -19,16 +20,17 @@ for (int i = 0; i < rows; ++i) \
     }\
 }
 
-#define DEBUG_FPS_SCORE(frameTime, score) \
-char debugMsg[100]; \
-sprintf(debugMsg, "FPS: %d   Score: %d", (1000 / (SDL_GetTicks() - frameTime)), score);\
+#define DEBUG_FPS(frameTime) \
+char debugMsg[10]; \
+sprintf(debugMsg, "FPS: %d", (1000 / (SDL_GetTicks() - frameTime)));\
 SDL_WM_SetCaption(debugMsg, NULL);
 
 #else
 
 #define LOG_ERROR(error)
 #define LOG_SDL_ERROR(error)
-#define DEBUG_FPS_SCORE(frameTime, score)
+#define LOG_TTF_ERROR(error)
+#define DEBUG_FPS(frameTime, score)
 #define DEBUG_BOARD(screen, area)
 
 #endif

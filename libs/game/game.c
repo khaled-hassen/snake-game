@@ -3,19 +3,33 @@
 #include <math.h>
 #include "../../debug/debug.h"
 
-SDL_Surface* Game_init()
+Game Game_init()
 {
+    Game game = { NULL, NULL, NULL };
+
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0)
     {
         LOG_SDL_ERROR("Cannot Game_init SDL");
-        return NULL;
+        return game;
+    }
+
+    if (TTF_Init() < 0)
+    {
+        LOG_TTF_ERROR("Cannot init SDL_TTF");
+        return game;
     }
 
     SDL_Surface* screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_SWSURFACE);
     if (screen == NULL) LOG_SDL_ERROR("Cannot create screen");
     SDL_WM_SetCaption("Snake game", NULL);
 
-    return screen;
+    TTF_Font* font = TTF_OpenFont("robot.ttf", 28);
+    if (font == NULL) LOG_TTF_ERROR("Cannot open font");
+
+    game.screen = screen;
+    game.font = font;
+
+    return game;
 }
 
 Timer Game_getTicks() { return SDL_GetTicks(); }
@@ -28,7 +42,28 @@ void Game_capFPS(Timer frameTime)
     if (deltaTime < frameRenderTime) SDL_Delay(floor(frameRenderTime - deltaTime));
 }
 
-void Game_close() { SDL_Quit(); }
+void Game_close(Game game)
+{
+    TTF_CloseFont(game.font);
+    SDL_FreeSurface(game.message);
+    SDL_Quit();
+}
+
+void Game_renderScore(Game game, int score)
+{
+    char msg[100];
+    sprintf(msg, "Score: %d", score);
+    SDL_Color color = { 0xFF, 0xFF, 0xFF };
+    game.message = TTF_RenderText_Solid(game.font, msg, color);
+    if (game.message == NULL)
+    {
+        LOG_TTF_ERROR("Cannot render message");
+        return;
+    }
+
+    SDL_Rect offset = {10, 10, 100, 30};
+    SDL_BlitSurface(game.message, NULL, game.screen, &offset);
+}
 
 void Game_update(SDL_Surface* screen)
 {
@@ -79,7 +114,7 @@ SDL_Rect Game_drawBoard(SDL_Surface* screen, SDL_Rect walls[4])
     // drawing the walls
     Uint32 wallColor = SDL_MapRGB(screen->format, 48, 48, 48);
 
-    SDL_Rect topWall = { 0, 0, SCREEN_WIDTH, WALL_THICKNESS };
+    SDL_Rect topWall = { 0, 0, SCREEN_WIDTH, 5 * WALL_THICKNESS };
     SDL_FillRect(screen, &topWall, wallColor);
 
     SDL_Rect bottomWall = { 0, SCREEN_HEIGHT - WALL_THICKNESS, SCREEN_WIDTH, WALL_THICKNESS };
@@ -96,8 +131,8 @@ SDL_Rect Game_drawBoard(SDL_Surface* screen, SDL_Rect walls[4])
     walls[LEFT] = leftWall;
     walls[RIGHT] = rightWall;
 
-    SDL_Rect movingArea = { WALL_THICKNESS, WALL_THICKNESS, SCREEN_WIDTH - 2 * WALL_THICKNESS,
-                            SCREEN_HEIGHT - 2 * WALL_THICKNESS };
+    SDL_Rect movingArea = { walls[LEFT].w, walls[TOP].h, SCREEN_WIDTH - walls[LEFT].w - walls[RIGHT].w,
+                            SCREEN_HEIGHT - walls[TOP].h - walls[BOTTOM].h };
     return movingArea;
 }
 
