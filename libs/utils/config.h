@@ -4,5 +4,5 @@
 
 #define CELL_SIZE 20
 
-#define H_CELLS 40
-#define V_CELLS 35
+#define H_CELLS 35
+#define V_CELLS 30
