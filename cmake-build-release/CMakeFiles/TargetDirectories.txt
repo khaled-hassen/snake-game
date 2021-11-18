@@ -1,3 +1,0 @@
-C:/Users/khaled/Documents/BME/C Programming/snake/cmake-build-release/CMakeFiles/snake.dir
-C:/Users/khaled/Documents/BME/C Programming/snake/cmake-build-release/CMakeFiles/edit_cache.dir
-C:/Users/khaled/Documents/BME/C Programming/snake/cmake-build-release/CMakeFiles/rebuild_cache.dir
