@@ -1,7 +1,8 @@
-#include <math.h>
 #include "snake.h"
 #include "stdlib.h"
 #include "../../debug/debug.h"
+#include "tail.h"
+
 
 Snake* Snake_create(int x, int y)
 {
@@ -12,28 +13,36 @@ Snake* Snake_create(int x, int y)
         return NULL;
     }
 
-    snake->length = 1;
-    snake->speed = CELL_SIZE;
+    snake->length = SNAKE_INITIAL_LENGTH;
+    snake->speed = SNAKE_SPEED;
     Vector velocity = { snake->speed, 0 };
     snake->velocity = velocity;
-    SDL_Rect shape = { x, y, SNAKE_WIDTH, SNAKE_WIDTH };
-    snake->shape = shape;
+    SDL_Rect head = { x + SNAKE_WIDTH * snake->length, y, SNAKE_WIDTH, SNAKE_WIDTH };
+    snake->head = head;
     snake->score = 0;
+    snake->tail = Tail_create(x, y, snake->length, SNAKE_WIDTH);
 
     return snake;
 }
 
-void Snake_destroy(Snake* snake) { free(snake); }
+void Snake_destroy(Snake* snake)
+{
+    Tail_destroy(snake->tail);
+    free(snake);
+}
 
 void Snake_move(SDL_Surface* screen, Snake* snake, int frames)
 {
     // if (1/CELLS_PER_SECOND) has passed move the snake
     if ((frames % (MAX_FPS / CELLS_PER_SECOND)) == 0)
     {
-        snake->shape.x += snake->velocity.x;
-        snake->shape.y += snake->velocity.y;
+        // snake->head.x += snake->velocity.x;
+        // snake->head.y += snake->velocity.y;
+        // Tail_move(snake->tail, snake->velocity);
     }
-    SDL_FillRect(screen, &snake->shape, SDL_MapRGB(screen->format, 0, 0xFF, 0));
+    Uint32 color = SDL_MapRGB(screen->format, 0, 0xFF, 0);
+    SDL_FillRect(screen, &snake->head, color);
+    Tail_render(screen, snake->tail, color);
 }
 
 void Snake_turn(Snake* snake, Vector direction)
@@ -48,10 +57,10 @@ void Snake_turn(Snake* snake, Vector direction)
 
 bool Snake_detectCollision(Snake* snake, SDL_Rect other)
 {
-    if ((snake->shape.x + snake->shape.w <= other.x)
-        || (snake->shape.x >= other.x + other.w)
-        || (snake->shape.y + snake->shape.h <= other.y)
-        || (snake->shape.y >= other.y + other.h))
+    if ((snake->head.x + snake->head.w <= other.x)
+        || (snake->head.x >= other.x + other.w)
+        || (snake->head.y + snake->head.h <= other.y)
+        || (snake->head.y >= other.y + other.h))
         return false;
 
     return true;
@@ -59,10 +68,10 @@ bool Snake_detectCollision(Snake* snake, SDL_Rect other)
 
 bool Snake_hitWalls(Snake* snake, SDL_Rect* walls)
 {
-    if ((snake->shape.x >= (walls[LEFT].x + walls[LEFT].w))
-        && ((snake->shape.x + snake->shape.w) <= walls[RIGHT].x)
-        && (snake->shape.y >= (walls[TOP].y + walls[TOP].h))
-        && ((snake->shape.y + snake->shape.h) <= walls[BOTTOM].y))
+    if ((snake->head.x >= (walls[LEFT].x + walls[LEFT].w))
+        && ((snake->head.x + snake->head.w) <= walls[RIGHT].x)
+        && (snake->head.y >= (walls[TOP].y + walls[TOP].h))
+        && ((snake->head.y + snake->head.h) <= walls[BOTTOM].y))
         return false;
 
     return true;
@@ -74,7 +83,9 @@ void Snake_stop(Snake* snake)
     snake->velocity.y = 0;
 }
 
-void Snake_increaseScore(Snake* snake)
+void Snake_eat(Snake* snake)
 {
     snake->score += 10;
+    snake->length += 1;
+    snake->tail = Tail_increment(snake->tail);
 }

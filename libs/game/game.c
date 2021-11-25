@@ -19,6 +19,8 @@ Game Game_init()
         return game;
     }
 
+    // to spawn the window at the center
+    setenv("SDL_VIDEO_CENTERED", "SDL_VIDEO_CENTERED", 1);
     SDL_Surface* screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_SWSURFACE);
     if (screen == NULL) LOG_SDL_ERROR("Cannot create screen");
     SDL_WM_SetCaption("Snake game", NULL);
@@ -61,7 +63,7 @@ void Game_renderScore(Game game, int score)
         return;
     }
 
-    SDL_Rect offset = {10, 10, 100, 30};
+    SDL_Rect offset = { 10, 10, 100, 30 };
     SDL_BlitSurface(game.message, NULL, game.screen, &offset);
 }
 

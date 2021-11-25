@@ -1,6 +1,5 @@
 #include "apple.h"
 #include <stdlib.h>
-#include <stdbool.h>
 #include "../utils/math/math.h"
 #include "../../debug/debug.h"
 
@@ -32,6 +31,7 @@ void Apple_generatePosition(Apple* apple, SDL_Rect area)
     int yCells = area.y / CELL_SIZE;
 
     // generate a random cell x and y used to spawn the apple (different from last position)
+    // also the apple must not collide with the snake
     int randomX = 0, randomY = 0;
     do
     {

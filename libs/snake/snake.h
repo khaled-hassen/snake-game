@@ -6,11 +6,14 @@
 #include "../utils/config.h"
 
 #define SNAKE_WIDTH CELL_SIZE
+#define SNAKE_SPEED CELL_SIZE
+#define SNAKE_INITIAL_LENGTH 3
 #define CELLS_PER_SECOND 4
 
 typedef struct
 {
-    SDL_Rect shape;
+    SDL_Rect head;
+    struct Tail* tail;
     int length;
     int score;
     int speed;
@@ -33,8 +36,8 @@ void Snake_destroy(Snake* snake);
 // return result
 bool Snake_detectCollision(Snake* snake, SDL_Rect other);
 
-// increases the snake's score (normally when he eats an apple)
-void Snake_increaseScore(Snake* snake);
+// increases the snake's score and length when eating an apple
+void Snake_eat(Snake* snake);
 
 // check if the snake hits a wall or not
 // return the state
