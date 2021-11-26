@@ -36,9 +36,9 @@ void Snake_move(SDL_Surface* screen, Snake* snake, int frames)
     // if (1/CELLS_PER_SECOND) has passed move the snake
     if ((frames % (MAX_FPS / CELLS_PER_SECOND)) == 0)
     {
-        // snake->head.x += snake->velocity.x;
-        // snake->head.y += snake->velocity.y;
-        // Tail_move(snake->tail, snake->velocity);
+        snake->head.x += snake->velocity.x;
+        snake->head.y += snake->velocity.y;
+        Tail_move(snake->tail, snake->velocity);
     }
     Uint32 color = SDL_MapRGB(screen->format, 0, 0xFF, 0);
     SDL_FillRect(screen, &snake->head, color);
@@ -53,17 +53,6 @@ void Snake_turn(Snake* snake, Vector direction)
         snake->velocity.x = snake->speed * direction.x;
         snake->velocity.y = snake->speed * direction.y;
     }
-}
-
-bool Snake_detectCollision(Snake* snake, SDL_Rect other)
-{
-    if ((snake->head.x + snake->head.w <= other.x)
-        || (snake->head.x >= other.x + other.w)
-        || (snake->head.y + snake->head.h <= other.y)
-        || (snake->head.y >= other.y + other.h))
-        return false;
-
-    return true;
 }
 
 bool Snake_hitWalls(Snake* snake, SDL_Rect* walls)

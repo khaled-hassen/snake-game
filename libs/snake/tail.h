@@ -2,23 +2,17 @@
 #include <SDL/SDL.h>
 #include "../utils/types.h"
 
-typedef struct Tail
-{
-    struct Tail* next;
-    SDL_Rect shape;
-} Tail;
-
 // Create the snake tail
-Tail* Tail_create(int x, int y, int length, int width);
+RectList* Tail_create(int x, int y, int length, int width);
 
 // free the memory used by the tail
-void Tail_destroy(Tail* tail);
+void Tail_destroy(RectList* tail);
 
 // draw the snake to the screen
-void Tail_render(SDL_Surface* screen, Tail* tail, Uint32 color);
+void Tail_render(SDL_Surface* screen, RectList* tail, Uint32 color);
 
 // move the snake according the passed velocity
-void Tail_move(Tail* tail, Vector velocity);
+void Tail_move(RectList* tail, Vector velocity);
 
 // increase the tail length and return the new tail
-Tail* Tail_increment(Tail* tail);
+RectList* Tail_increment(RectList* tail);

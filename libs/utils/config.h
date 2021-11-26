@@ -1,6 +1,6 @@
 #pragma once
 
-#define MAX_FPS 160
+#define MAX_FPS 600
 
 #define CELL_SIZE 20
 

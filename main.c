@@ -28,11 +28,10 @@ int main(int argc, char* argv[])
 
     // needs to be initialized in order to randomly generate the apples
     Math_initSeed();
-    Apple_generatePosition(apple, movingArea);
+    Apple_generatePosition(apple, movingArea, snake->head, snake->tail);
 
     // TODO remove
     Snake_move(game.screen, snake, 1);
-
 
     while (true)
     {
@@ -45,12 +44,12 @@ int main(int argc, char* argv[])
         // DEBUG_BOARD(game.screen, movingArea);
         Apple_draw(game.screen, apple);
 
-        if (Snake_detectCollision(snake, apple->shape))
+        if (Math_detectCollision(snake->head, apple->shape))
         {
             Snake_eat(snake);
-            Apple_generatePosition(apple, movingArea);
+            Apple_generatePosition(apple, movingArea, snake->head, snake->tail);
         }
-        Apple_generatePosition(apple, movingArea);
+        Apple_generatePosition(apple, movingArea, snake->head, snake->tail);
 
         if (!gameOver) direction = Game_handleInput(event);
         else Snake_stop(snake);

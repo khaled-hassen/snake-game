@@ -20,7 +20,18 @@ Apple* Apple_Create()
     return apple;
 }
 
-void Apple_generatePosition(Apple* apple, SDL_Rect area)
+// helper function to check the collision between the apple and a list of shapes
+bool detectShapesCollision(Apple* apple, RectList* shapes)
+{
+    if (shapes == NULL) return false;
+
+    for (; shapes != NULL; shapes = shapes->next)
+        if (Math_detectCollision(apple->shape, shapes->shape)) return true;
+
+    return false;
+}
+
+void Apple_generatePosition(Apple* apple, SDL_Rect area, SDL_Rect shape, RectList* shapes)
 {
     // get the number of horizontal and vertical cells contained in the area
     int hCells = area.w / CELL_SIZE;
@@ -33,11 +44,15 @@ void Apple_generatePosition(Apple* apple, SDL_Rect area)
     // generate a random cell x and y used to spawn the apple (different from last position)
     // also the apple must not collide with the snake
     int randomX = 0, randomY = 0;
+    SDL_Rect rect = apple->shape;
     do
     {
         randomX = Math_randomInt(xCells, hCells + xCells - 1) * CELL_SIZE;
         randomY = Math_randomInt(yCells, vCells + yCells - 1) * CELL_SIZE;
-    } while ((randomX == apple->lastPosition.x) && (randomY == apple->lastPosition.y));
+        rect.x = randomX;
+        rect.y = randomY;
+    } while ((randomX == apple->lastPosition.x) && (randomY == apple->lastPosition.y) ||
+             Math_detectCollision(rect, shape) || detectShapesCollision(apple, shapes));
 
     apple->shape.x = randomX;
     apple->shape.y = randomY;

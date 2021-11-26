@@ -13,7 +13,7 @@
 typedef struct
 {
     SDL_Rect head;
-    struct Tail* tail;
+    RectList* tail;
     int length;
     int score;
     int speed;
@@ -31,10 +31,6 @@ void Snake_turn(Snake* snake, Vector direction);
 
 // free the snake from memory
 void Snake_destroy(Snake* snake);
-
-// check if snake collides with other or not
-// return result
-bool Snake_detectCollision(Snake* snake, SDL_Rect other);
 
 // increases the snake's score and length when eating an apple
 void Snake_eat(Snake* snake);
