@@ -1,5 +1,6 @@
 #include "snake.h"
 #include "stdlib.h"
+#include "../utils/math/math.h"
 #include "../../debug/debug.h"
 
 
@@ -45,6 +46,10 @@ void Snake_move(SDL_Surface* screen, Snake* snake, int frames)
 
 void Snake_turn(Snake* snake, Vector direction)
 {
+    // to prevent the snake from going back on his tail
+    if ((direction.x == 1 || direction.x == -1) && snake->tail->blocks[0].y == snake->head.y) return;
+    if ((direction.y == 1 || direction.y == -1) && snake->tail->blocks[0].x == snake->head.x) return;
+
     if (direction.x != 0 || direction.y != 0)
     {
         // change the snake velocity which depends on speed and direction
@@ -53,7 +58,8 @@ void Snake_turn(Snake* snake, Vector direction)
     }
 }
 
-bool Snake_hitWalls(Snake* snake, SDL_Rect* walls)
+// helper function detects if the snake hits a wall or not
+bool detectWallsCollision(Snake* snake, SDL_Rect* walls)
 {
     if ((snake->head.x >= (walls[LEFT].x + walls[LEFT].w))
         && ((snake->head.x + snake->head.w) <= walls[RIGHT].x)
@@ -64,10 +70,17 @@ bool Snake_hitWalls(Snake* snake, SDL_Rect* walls)
     return true;
 }
 
-void Snake_stop(Snake* snake)
+// helper function detects if the snake hits his tail or not
+bool detectTailCollision(Snake* snake)
 {
-    snake->velocity.x = 0;
-    snake->velocity.y = 0;
+    for (int i = 0; i < snake->tail->length; ++i)
+        if (Math_detectCollision(snake->head, snake->tail->blocks[i])) return true;
+    return false;
+}
+
+bool Snake_isDead(Snake* snake, SDL_Rect* walls)
+{
+    return detectWallsCollision(snake, walls) || detectTailCollision(snake);
 }
 
 void Snake_eat(Snake* snake)

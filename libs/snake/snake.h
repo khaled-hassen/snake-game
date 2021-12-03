@@ -34,10 +34,8 @@ void Snake_destroy(Snake* snake);
 // increases the snake's score and length when eating an apple
 void Snake_eat(Snake* snake);
 
-// check if the snake hits a wall or not
+// check if the snake dead or not
+// the snake is dead if he hits a wall or his tail
 // return the state
-bool Snake_hitWalls(Snake* snake, SDL_Rect* walls);
-
-// stop the snake's movement
-void Snake_stop(Snake* snake);
+bool Snake_isDead(Snake* snake, SDL_Rect* walls);
 

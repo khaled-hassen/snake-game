@@ -35,6 +35,8 @@ void Tail_move(SDL_Rect head, Tail* tail)
 
 void Tail_increment(Tail* tail)
 {
+    if (tail->length >=MAX_TAIL_INITIAL_LENGTH) return;
+
     SDL_Rect lastBlock = tail->blocks[tail->length - 1];
     SDL_Rect shape = { lastBlock.x - lastBlock.w, lastBlock.y, lastBlock.w, lastBlock.h };
     tail->blocks[tail->length++] = shape;
