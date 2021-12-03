@@ -22,7 +22,7 @@ void Tail_destroy(Tail* tail);
 void Tail_render(SDL_Surface* screen, Tail* tail, Uint32 color);
 
 // move the snake according the passed velocity
-void Tail_move(Tail* tail, Vector velocity);
+void Tail_move(SDL_Rect head, Tail* tail);
 
 // increase the tail length and return the new tail
 void Tail_increment(Tail* tail);

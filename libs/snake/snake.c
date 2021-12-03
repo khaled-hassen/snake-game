@@ -34,9 +34,9 @@ void Snake_move(SDL_Surface* screen, Snake* snake, int frames)
     // if (1/CELLS_PER_SECOND) has passed move the snake
     if ((frames % (MAX_FPS / CELLS_PER_SECOND)) == 0)
     {
+        Tail_move(snake->head, snake->tail);
         snake->head.x += snake->velocity.x;
         snake->head.y += snake->velocity.y;
-        Tail_move(snake->tail, snake->velocity);
     }
     Uint32 color = SDL_MapRGB(screen->format, 0, 0xFF, 0);
     SDL_FillRect(screen, &snake->head, color);
