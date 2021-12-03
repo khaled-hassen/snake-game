@@ -67,9 +67,9 @@ void Game_renderScore(Game game, int score)
     SDL_BlitSurface(game.message, NULL, game.screen, &offset);
 }
 
-void Game_update(SDL_Surface* screen)
+void Game_update(Game game)
 {
-    if (SDL_Flip(screen) < 0) LOG_SDL_ERROR("Cannot update screen");
+    if (SDL_Flip(game.screen) < 0) LOG_SDL_ERROR("Cannot update screen");
 }
 
 int Game_getEvents(SDL_Event* event) { return SDL_PollEvent(event); }
@@ -138,8 +138,46 @@ SDL_Rect Game_drawBoard(SDL_Surface* screen, SDL_Rect walls[4])
     return movingArea;
 }
 
+// helper function to draw menu items
+void drawItems(Game game)
+{
+    char* items[] = { "Single player", "Multi player", "Quit" };
+    int itemWidth = 250, itemHeight = 80;
+    int itemsGap = itemHeight + 50;
+    int startY = 150;
+    SDL_Color color = { 0, 0, 0 };
+    for (int i = 0; i < 3; ++i)
+    {
+        SDL_Rect item = { SCREEN_WIDTH / 2 - itemWidth / 2, startY + itemsGap * i, itemWidth, itemHeight };
+        SDL_Surface* message = TTF_RenderText_Solid(game.font, items[i], color);
+        if (message == NULL)
+        {
+            LOG_TTF_ERROR("Cannot render message");
+            return;
+        }
 
+        SDL_FillRect(game.screen, &item, SDL_MapRGB(game.screen->format, 0xFA, 0xED, 0xF0));
+        SDL_Rect offset2 = { SCREEN_WIDTH / 2 - message->clip_rect.w / 2,
+                             item.y + item.h / 2 - message->clip_rect.h / 2,
+                             message->clip_rect.w, message->clip_rect.h };
+        SDL_BlitSurface(message, NULL, game.screen, &offset2);
+    }
+}
 
+void Game_drawMenu(Game game)
+{
+    SDL_Color color = { 0xFF, 0xFF, 0xFF };
+    SDL_Surface* message = TTF_RenderText_Solid(game.font, "Snake game", color);
+    if (message == NULL)
+    {
+        LOG_TTF_ERROR("Cannot render message");
+        return;
+    }
 
+    SDL_FillRect(game.screen, NULL, SDL_MapRGB(game.screen->format, 48, 48, 48));
+    // Draw game name
+    SDL_Rect offset = { SCREEN_WIDTH / 2 - message->clip_rect.w / 2, 50, message->clip_rect.w, message->clip_rect.h };
+    SDL_BlitSurface(message, NULL, game.screen, &offset);
 
-
+    drawItems(game);
+}

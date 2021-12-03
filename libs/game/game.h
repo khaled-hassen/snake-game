@@ -30,14 +30,17 @@ Timer Game_getTicks();
 void Game_capFPS(Timer frameTime);
 
 // draw the game board
-// return the walls and the board moving area
+// return the board moving area
 SDL_Rect Game_drawBoard(SDL_Surface* screen, SDL_Rect walls[4]);
+
+// draws the game menu
+void Game_drawMenu(Game game);
 
 // render the snake score
 void Game_renderScore(Game game, int score);
 
 // render changes
-void Game_update(SDL_Surface* screen);
+void Game_update(Game game);
 
 // get keyboard events
 // return the number of events
