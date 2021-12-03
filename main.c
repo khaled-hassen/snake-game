@@ -6,8 +6,8 @@
 
 int main(int argc, char* argv[])
 {
-    Game game = Game_init();
-    if (game.screen == NULL) return 1;
+    Game* game = Game_init();
+    if (game == NULL || game->screen == NULL) return 1;
 
     bool quit = false;
     Timer frameTime = 0;
@@ -21,6 +21,8 @@ int main(int argc, char* argv[])
         frameTime = Game_getTicks();
         Game_drawMenu(game);
         Game_update(game);
+        MenuItem item = Game_handleMouseInput(game, event);
+        if (item == QUIT) break;
         Game_capFPS(frameTime);
         DEBUG_FPS(frameTime);
     }
