@@ -22,8 +22,7 @@ void Tail_destroy(Tail* tail)
 void Tail_render(SDL_Surface* screen, Tail* tail, Uint32 color)
 {
     for (int i = 0; i < tail->length; ++i)
-        SDL_FillRect(screen, &tail->blocks[i], SDL_MapRGB(screen->format, 0xFF, 0xFF, 0));
-    // SDL_FillRect(screen, &tail->blocks[i], color);
+        SDL_FillRect(screen, &tail->blocks[i], color);
 }
 
 void Tail_move(SDL_Rect head, Tail* tail)
@@ -35,9 +34,9 @@ void Tail_move(SDL_Rect head, Tail* tail)
 
 void Tail_increment(Tail* tail)
 {
-    if (tail->length >=MAX_TAIL_INITIAL_LENGTH) return;
+    if (tail->length >= MAX_TAIL_INITIAL_LENGTH) return;
 
     SDL_Rect lastBlock = tail->blocks[tail->length - 1];
-    SDL_Rect shape = { lastBlock.x - lastBlock.w, lastBlock.y, lastBlock.w, lastBlock.h };
+    SDL_Rect shape = { lastBlock.x, lastBlock.y, lastBlock.w, lastBlock.h };
     tail->blocks[tail->length++] = shape;
 }

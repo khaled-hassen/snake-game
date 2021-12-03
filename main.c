@@ -47,7 +47,6 @@ int main(int argc, char* argv[])
         }
 
         direction = Game_handleInput(event);
-
         Snake_turn(snake, direction);
         Snake_move(game.screen, snake, frames);
 

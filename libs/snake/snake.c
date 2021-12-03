@@ -14,8 +14,7 @@ Snake* Snake_create(int x, int y)
     }
 
     snake->tail = Tail_create(x, y, SNAKE_WIDTH);
-    snake->speed = SNAKE_SPEED;
-    Vector velocity = { snake->speed, 0 };
+    Vector velocity = { SNAKE_BASE_SPEED, 0 };
     snake->velocity = velocity;
     SDL_Rect head = { x + SNAKE_WIDTH * snake->tail->length, y, SNAKE_WIDTH, SNAKE_WIDTH };
     snake->head = head;
@@ -53,8 +52,8 @@ void Snake_turn(Snake* snake, Vector direction)
     if (direction.x != 0 || direction.y != 0)
     {
         // change the snake velocity which depends on speed and direction
-        snake->velocity.x = snake->speed * direction.x;
-        snake->velocity.y = snake->speed * direction.y;
+        snake->velocity.x = SNAKE_BASE_SPEED * direction.x;
+        snake->velocity.y = SNAKE_BASE_SPEED * direction.y;
     }
 }
 

@@ -7,7 +7,7 @@
 #include "../utils/config.h"
 
 #define SNAKE_WIDTH CELL_SIZE
-#define SNAKE_SPEED CELL_SIZE
+#define SNAKE_BASE_SPEED CELL_SIZE
 #define CELLS_PER_SECOND 4
 
 typedef struct
@@ -15,7 +15,6 @@ typedef struct
     SDL_Rect head;
     Tail* tail;
     int score;
-    int speed;
     Vector velocity;
 } Snake;
 

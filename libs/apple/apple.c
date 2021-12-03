@@ -24,7 +24,7 @@ Apple* Apple_Create()
 bool detectShapesCollision(Apple* apple, Tail* tail)
 {
     // TODO fix: the program crashes when running this function many times
-    return false;
+    // return false;
     for (int i = 0; i < tail->length; ++i)
         if (Math_detectCollision(apple->shape, tail->blocks[i])) return true;
 
