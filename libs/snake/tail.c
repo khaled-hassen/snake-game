@@ -1,54 +1,44 @@
 #include "tail.h"
 
-RectList* Tail_create(int x, int y, int length, int width)
+Tail* Tail_create(int x, int y, int width)
 {
-    RectList* tail = NULL;
-    RectList* tmp = NULL;
-    // create the tail backward (the head of the linked list is located at the end of the snake)
-    for (int i = length; i > 0; --i)
+    Tail* tail = (Tail*) malloc(sizeof(Tail));
+    tail->length = TAIL_INITIAL_LENGTH;
+    tail->blocks = (SDL_Rect*) malloc(tail->length * sizeof(SDL_Rect));
+    // create the blocks backward (the head of the linked list is located at the end of the snake)
+    for (int i = 0; i < tail->length; ++i)
     {
-        SDL_Rect shape = { x + width * (length - i), y, width, width };
-        RectList* chunk = (RectList*) malloc(sizeof(RectList));
-        chunk->shape = shape;
-        chunk->next = NULL;
-
-        if (tail == NULL) tail = chunk;
-        else tmp->next = chunk;
-
-        tmp = chunk;
+        SDL_Rect shape = { x + width * i, y, width, width };
+        tail->blocks[i] = shape;
     }
     return tail;
 }
 
-void Tail_destroy(RectList* tail)
+void Tail_destroy(Tail* tail)
 {
-    while (tail != NULL)
+    free(tail->blocks);
+    free(tail);
+}
+
+void Tail_render(SDL_Surface* screen, Tail* tail, Uint32 color)
+{
+    for (int i = 0; i < tail->length; ++i)
+        SDL_FillRect(screen, &tail->blocks[i], color);
+}
+
+void Tail_move(Tail* tail, Vector velocity)
+{
+    for (int i = 0; i < tail->length; ++i)
     {
-        RectList* tmp = tail->next;
-        free(tail);
-        tail = tmp;
+        tail->blocks[i].x += velocity.x;
+        tail->blocks[i].y += velocity.y;
     }
 }
 
-void Tail_render(SDL_Surface* screen, RectList* tail, Uint32 color)
+void Tail_increment(Tail* tail)
 {
-    for (; tail != NULL; tail = tail->next) SDL_FillRect(screen, &tail->shape, color);
-}
-
-void Tail_move(RectList* tail, Vector velocity)
-{
-    for (; tail != NULL; tail = tail->next)
-    {
-        tail->shape.x += velocity.x;
-        tail->shape.y += velocity.y;
-    }
-}
-
-RectList* Tail_increment(RectList* tail)
-{
-    RectList* newTail = (RectList*) malloc(sizeof(RectList));
-    SDL_Rect shape = { tail->shape.x - tail->shape.w, tail->shape.y, tail->shape.w, tail->shape.h };
-    newTail->shape = shape;
-    newTail->next = tail;
-    return newTail;
+    // TODO fix: the snake starts incrementing only after eating 4 apples
+    SDL_Rect lastBlock = tail->blocks[tail->length - 1];
+    SDL_Rect shape = { lastBlock.x - lastBlock.w, lastBlock.y, lastBlock.w, lastBlock.h };
+    tail->blocks[tail->length++] = shape;
 }

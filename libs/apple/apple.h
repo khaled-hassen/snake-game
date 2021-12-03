@@ -15,8 +15,8 @@ typedef struct
 Apple* Apple_Create();
 
 // generate and place the apple in a random place inside the given area
-// and prevent it from colliding with shape or shapes
-void Apple_generatePosition(Apple* apple, SDL_Rect area, SDL_Rect shape, RectList* shapes);
+// and prevent it from colliding with head or shapes
+void Apple_generatePosition(Apple* apple, SDL_Rect area, SDL_Rect head);
 
 void Apple_draw(SDL_Surface* screen, Apple* apple);
 

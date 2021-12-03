@@ -1,7 +1,6 @@
 #include "snake.h"
 #include "stdlib.h"
 #include "../../debug/debug.h"
-#include "tail.h"
 
 
 Snake* Snake_create(int x, int y)
@@ -13,14 +12,13 @@ Snake* Snake_create(int x, int y)
         return NULL;
     }
 
-    snake->length = SNAKE_INITIAL_LENGTH;
+    snake->tail = Tail_create(x, y, SNAKE_WIDTH);
     snake->speed = SNAKE_SPEED;
     Vector velocity = { snake->speed, 0 };
     snake->velocity = velocity;
-    SDL_Rect head = { x + SNAKE_WIDTH * snake->length, y, SNAKE_WIDTH, SNAKE_WIDTH };
+    SDL_Rect head = { x + SNAKE_WIDTH * snake->tail->length, y, SNAKE_WIDTH, SNAKE_WIDTH };
     snake->head = head;
     snake->score = 0;
-    snake->tail = Tail_create(x, y, snake->length, SNAKE_WIDTH);
 
     return snake;
 }
@@ -75,6 +73,5 @@ void Snake_stop(Snake* snake)
 void Snake_eat(Snake* snake)
 {
     snake->score += 10;
-    snake->length += 1;
-    snake->tail = Tail_increment(snake->tail);
+    Tail_increment(snake->tail);
 }

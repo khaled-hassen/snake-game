@@ -21,17 +21,17 @@ Apple* Apple_Create()
 }
 
 // helper function to check the collision between the apple and a list of shapes
-bool detectShapesCollision(Apple* apple, RectList* shapes)
-{
-    if (shapes == NULL) return false;
+// bool detectShapesCollision(Apple* apple, RectList* shapes)
+// {
+//     if (shapes == NULL) return false;
+//
+//     for (; shapes != NULL; shapes = shapes->next)
+//         if (Math_detectCollision(apple->shape, shapes->shape)) return true;
+//
+//     return false;
+// }
 
-    for (; shapes != NULL; shapes = shapes->next)
-        if (Math_detectCollision(apple->shape, shapes->shape)) return true;
-
-    return false;
-}
-
-void Apple_generatePosition(Apple* apple, SDL_Rect area, SDL_Rect shape, RectList* shapes)
+void Apple_generatePosition(Apple* apple, SDL_Rect area, SDL_Rect head)
 {
     // get the number of horizontal and vertical cells contained in the area
     int hCells = area.w / CELL_SIZE;
@@ -52,7 +52,8 @@ void Apple_generatePosition(Apple* apple, SDL_Rect area, SDL_Rect shape, RectLis
         rect.x = randomX;
         rect.y = randomY;
     } while ((randomX == apple->lastPosition.x) && (randomY == apple->lastPosition.y) ||
-             Math_detectCollision(rect, shape) || detectShapesCollision(apple, shapes));
+             Math_detectCollision(rect, head));
+    // || detectShapesCollision(apple, shapes)
 
     apple->shape.x = randomX;
     apple->shape.y = randomY;

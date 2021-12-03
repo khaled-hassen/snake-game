@@ -2,19 +2,18 @@
 
 #include <SDL/SDL.h>
 #include <stdbool.h>
+#include "tail.h"
 #include "../utils/types.h"
 #include "../utils/config.h"
 
 #define SNAKE_WIDTH CELL_SIZE
 #define SNAKE_SPEED CELL_SIZE
-#define SNAKE_INITIAL_LENGTH 3
 #define CELLS_PER_SECOND 4
 
 typedef struct
 {
     SDL_Rect head;
-    RectList* tail;
-    int length;
+    Tail* tail;
     int score;
     int speed;
     Vector velocity;
