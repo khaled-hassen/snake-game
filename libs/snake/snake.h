@@ -17,10 +17,11 @@ typedef struct
     int score;
     Vector velocity;
     Vector direction;
+    Uint32 color;
 } Snake;
 
-// create the snake
-Snake* Snake_create(int x, int y);
+// create the snake and orientate it right or left
+Snake* Snake_create(int x, int y, SDL_Surface* screen, Orientation ori);
 
 // move the snake according the velocity
 void Snake_move(SDL_Surface* screen, Snake* snake, int frames);

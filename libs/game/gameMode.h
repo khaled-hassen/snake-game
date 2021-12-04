@@ -6,7 +6,7 @@
 
 typedef enum
 {
-    SINGLE = 0, MULTI, QUIT, NONE
+    GM_SINGLE = 0, GM_MULTI, GM_QUIT, GM_NONE
 } GameMode;
 
 // create the main menu items and stores them

@@ -4,7 +4,7 @@
 #include "../../debug/debug.h"
 
 
-Snake* Snake_create(int x, int y)
+Snake* Snake_create(int x, int y, SDL_Surface* screen, Orientation ori)
 {
     Snake* snake = (Snake*) malloc(sizeof(Snake));
     if (snake == NULL)
@@ -13,12 +13,17 @@ Snake* Snake_create(int x, int y)
         return NULL;
     }
 
-    snake->tail = Tail_create(x, y, SNAKE_WIDTH);
-    Vector velocity = { SNAKE_BASE_SPEED, 0 };
-    Vector direction = { 1, 0 };
+    int headX = x + ((ori == O_LEFT) ? -SNAKE_WIDTH * (TAIL_INITIAL_LENGTH + 1) : SNAKE_WIDTH * TAIL_INITIAL_LENGTH);
+    int headY = y - (ori == O_LEFT ? SNAKE_WIDTH : 0);
+
+    snake->color = SDL_MapRGB(screen->format, ori == O_LEFT ? 0xFF : 0, 0xFF, 0);
+    snake->tail = Tail_create((ori == O_LEFT) ? headX : x, headY, SNAKE_WIDTH, ori);
+    Vector velocity = { ori * SNAKE_BASE_SPEED, 0 };
+    Vector direction = { ori, 0 };
     snake->velocity = velocity;
     snake->direction = direction;
-    SDL_Rect head = { x + SNAKE_WIDTH * snake->tail->length, y, SNAKE_WIDTH, SNAKE_WIDTH };
+
+    SDL_Rect head = { headX, headY, SNAKE_WIDTH, SNAKE_WIDTH };
     snake->head = head;
     snake->score = 0;
 
@@ -41,9 +46,8 @@ void Snake_move(SDL_Surface* screen, Snake* snake, int frames)
         snake->head.x += snake->velocity.x;
         snake->head.y += snake->velocity.y;
     }
-    Uint32 color = SDL_MapRGB(screen->format, 0, 0xFF, 0);
-    SDL_FillRect(screen, &snake->head, color);
-    Tail_render(screen, snake->tail, color);
+    SDL_FillRect(screen, &snake->head, snake->color);
+    Tail_render(screen, snake->tail, snake->color);
 }
 
 void Snake_turn(Snake* snake)
@@ -63,10 +67,10 @@ void Snake_turn(Snake* snake)
 // helper function detects if the snake hits a wall or not
 bool detectWallsCollision(Snake* snake, SDL_Rect* walls)
 {
-    if ((snake->head.x >= (walls[LEFT].x + walls[LEFT].w))
-        && ((snake->head.x + snake->head.w) <= walls[RIGHT].x)
-        && (snake->head.y >= (walls[TOP].y + walls[TOP].h))
-        && ((snake->head.y + snake->head.h) <= walls[BOTTOM].y))
+    if ((snake->head.x >= (walls[P_LEFT].x + walls[P_LEFT].w))
+        && ((snake->head.x + snake->head.w) <= walls[P_RIGHT].x)
+        && (snake->head.y >= (walls[P_TOP].y + walls[P_TOP].h))
+        && ((snake->head.y + snake->head.h) <= walls[P_BOTTOM].y))
         return false;
 
     return true;

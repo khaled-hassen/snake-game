@@ -13,7 +13,7 @@ typedef struct
 #define MAX_TAIL_INITIAL_LENGTH 100
 
 // Create the snake tail
-Tail* Tail_create(int x, int y, int width);
+Tail* Tail_create(int x, int y, int width, Orientation ori);
 
 // free the memory used by the tail
 void Tail_destroy(Tail* tail);

@@ -8,5 +8,9 @@ typedef struct
 
 typedef enum
 {
-    TOP, BOTTOM, LEFT, RIGHT
+    P_TOP, P_BOTTOM, P_LEFT, P_RIGHT
 } Position;
+
+typedef enum {
+    O_RIGHT = 1, O_LEFT = -1
+} Orientation;

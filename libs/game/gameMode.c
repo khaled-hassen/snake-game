@@ -15,16 +15,16 @@ void GameMode_createMenuItems(SDL_Rect items[3])
 
 GameMode GameMode_getMode(SDL_Rect menuItems[3], SDL_Event event)
 {
-    if (event.type != SDL_MOUSEBUTTONDOWN) return NONE;
+    if (event.type != SDL_MOUSEBUTTONDOWN) return GM_NONE;
 
     int x = event.motion.x, y = event.motion.y;
-    for (GameMode i = SINGLE; i < NONE; ++i) // NONE is 3
+    for (GameMode i = GM_SINGLE; i < GM_NONE; ++i) // GM_NONE is 3
     {
         if (x >= menuItems[i].x && x <= (menuItems[i].x + menuItems[i].w)
             && y >= menuItems[i].y && y <= (menuItems[i].y + menuItems[i].h))
             return i;
     }
-    return NONE;
+    return GM_NONE;
 }
 
 
@@ -92,7 +92,7 @@ void GameMode_drawMenu(SDL_Surface* screen, TTF_Font* font, SDL_Rect menuItems[3
         return;
     }
     SDL_Rect bestScoreOffset = { 5 * SCREEN_WIDTH / 6 - 5 * bestScoreSurface->clip_rect.w / 6,
-                                 50 + scoreSurface->clip_rect.w,
+                                 80 + scoreSurface->clip_rect.h,
                                  bestScoreSurface->clip_rect.w, bestScoreSurface->clip_rect.h };
 
     SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 48, 48, 48));

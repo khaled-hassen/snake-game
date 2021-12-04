@@ -12,7 +12,8 @@ int main(int argc, char* argv[])
     SDL_Rect walls[4];
     SDL_Rect movingArea = Game_drawBoard(game, walls);
 
-    Snake* snake = NULL;
+    Snake* snake1 = NULL;
+    Snake* snake2 = NULL;
     Apple* apple = NULL;
     int frames = 0;
 
@@ -30,51 +31,59 @@ int main(int argc, char* argv[])
     while (true)
     {
         while (Game_getEvents(&event)) quit = Game_exited(event);
-        if (game->mode == NONE) game->mode = GameMode_getMode(menuItems, event);
-        quit = quit || game->mode == QUIT;
+        if (game->mode == GM_NONE) game->mode = GameMode_getMode(menuItems, event);
+        quit = quit || game->mode == GM_QUIT;
         if (quit) break;
 
         frames++;
         frameTime = Game_getTicks();
-        if (game->mode == NONE) GameMode_drawMenu(game->screen, game->font, menuItems, score);
+        if (game->mode == GM_NONE) GameMode_drawMenu(game->screen, game->font, menuItems, score);
         else
         {
-            if (snake == NULL)
+            if (snake1 == NULL)
             {
-                snake = Snake_create(movingArea.x, movingArea.y);
-                if (snake == NULL) return 1;
+                // snake1 = Snake_create(movingArea.x, movingArea.y, game->screen, O_RIGHT);
+                snake1 = Snake_create(movingArea.w + movingArea.x, movingArea.h + movingArea.y,game->screen, O_LEFT);
+                if (snake1 == NULL) return 1;
             }
+
+            if (game->mode == GM_MULTI && snake2 == NULL)
+            {
+                snake2 = Snake_create(movingArea.w, movingArea.y, NULL, O_LEFT);
+                if (snake2 == NULL) return 1;
+            }
+
 
             if (apple == NULL)
             {
                 apple = Apple_Create();
                 if (apple == NULL) return 1;
-                Apple_generatePosition(apple, movingArea, snake);
+                Apple_generatePosition(apple, movingArea, snake1);
             }
 
             movingArea = Game_drawBoard(game, walls);
             DEBUG_BOARD(game->screen, movingArea);
             Apple_draw(game->screen, apple);
 
-            if (Math_detectCollision(snake->head, apple->shape))
+            if (Math_detectCollision(snake1->head, apple->shape))
             {
-                Snake_eat(snake);
-                Apple_generatePosition(apple, movingArea, snake);
+                Snake_eat(snake1);
+                Apple_generatePosition(apple, movingArea, snake1);
             }
 
-            snake->direction = Game_handleKeyboardInput(event);
-            Snake_turn(snake);
-            Snake_move(game->screen, snake, frames);
+            snake1->direction = Game_handleKeyboardInput(event);
+            Snake_turn(snake1);
+            Snake_move(game->screen, snake1, frames);
 
-            if (Snake_isDead(snake, walls))
+            if (Snake_isDead(snake1, walls))
             {
-                game->mode = NONE;
-                score = snake->score;
-                Game_saveBestScore(snake->score);
-                Snake_destroy(&snake);
+                game->mode = GM_NONE;
+                score = snake1->score;
+                Game_saveBestScore(snake1->score);
+                Snake_destroy(&snake1);
                 Apple_destroy(&apple);
             }
-            else Game_renderScore(game, snake->score);
+            else Game_renderScore(game, snake1->score);
         }
 
         frames %= MAX_FPS;

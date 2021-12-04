@@ -20,7 +20,7 @@ Game* Game_init()
 
     Game* game = (Game*) malloc(sizeof(Game));
     game->scoreMessage = NULL;
-    game->mode = NONE;
+    game->mode = GM_NONE;
 
     // to spawn the window at the center
     setenv("SDL_VIDEO_CENTERED", "SDL_VIDEO_CENTERED", 1);
@@ -133,13 +133,13 @@ SDL_Rect Game_drawBoard(Game* game, SDL_Rect walls[4])
     SDL_Rect rightWall = { SCREEN_WIDTH - WALL_THICKNESS, 0, WALL_THICKNESS, SCREEN_HEIGHT };
     SDL_FillRect(game->screen, &rightWall, wallColor);
 
-    walls[TOP] = topWall;
-    walls[BOTTOM] = bottomWall;
-    walls[LEFT] = leftWall;
-    walls[RIGHT] = rightWall;
+    walls[P_TOP] = topWall;
+    walls[P_BOTTOM] = bottomWall;
+    walls[P_LEFT] = leftWall;
+    walls[P_RIGHT] = rightWall;
 
-    SDL_Rect movingArea = { walls[LEFT].w, walls[TOP].h, SCREEN_WIDTH - walls[LEFT].w - walls[RIGHT].w,
-                            SCREEN_HEIGHT - walls[TOP].h - walls[BOTTOM].h };
+    SDL_Rect movingArea = { walls[P_LEFT].w, walls[P_TOP].h, SCREEN_WIDTH - walls[P_LEFT].w - walls[P_RIGHT].w,
+                            SCREEN_HEIGHT - walls[P_TOP].h - walls[P_BOTTOM].h };
     return movingArea;
 }
 

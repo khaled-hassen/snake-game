@@ -1,13 +1,14 @@
 #include "tail.h"
 
-Tail* Tail_create(int x, int y, int width)
+Tail* Tail_create(int x, int y, int width, Orientation ori)
 {
     Tail* tail = (Tail*) malloc(sizeof(Tail));
     tail->length = TAIL_INITIAL_LENGTH;
     tail->blocks = (SDL_Rect*) malloc(MAX_TAIL_INITIAL_LENGTH * sizeof(SDL_Rect));
     for (int i = 0; i < tail->length; ++i)
     {
-        SDL_Rect shape = { x + width * (tail->length - i - 1), y, width, width };
+        int mult = (ori == O_LEFT) ? (i + 1) : (tail->length - i - 1);
+        SDL_Rect shape = { x + width * mult, y, width, width };
         tail->blocks[i] = shape;
     }
     return tail;

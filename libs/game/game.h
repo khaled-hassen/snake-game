@@ -44,7 +44,7 @@ void Game_update(Game* game);
 int Game_getEvents(SDL_Event* event);
 
 // handle the user keyboard input
-// return the input direction: UP DOWN LEFT RIGHT
+// return the input direction: UP DOWN P_LEFT P_RIGHT
 Vector Game_handleKeyboardInput(SDL_Event event);
 
 // check if the user closes the game or not
