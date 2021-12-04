@@ -76,17 +76,21 @@ bool detectWallsCollision(Snake* snake, SDL_Rect* walls)
     return true;
 }
 
-// helper function detects if the snake hits his tail or not
-bool detectTailCollision(Snake* snake)
+// helper function detects if the snake hits his tail or the other snake's tail (if provided)
+bool detectTailCollision(Snake* snake, Snake* other)
 {
-    for (int i = 0; i < snake->tail->length; ++i)
-        if (Math_detectCollision(snake->head, snake->tail->blocks[i])) return true;
+    int length = other == NULL ? snake->tail->length : other->tail->length;
+    SDL_Rect* blocks = other == NULL ? snake->tail->blocks : other->tail->blocks;
+    for (int i = 0; i < length; ++i)
+        if (Math_detectCollision(snake->head, blocks[i])) return true;
     return false;
 }
 
-bool Snake_isDead(Snake* snake, SDL_Rect* walls)
+bool Snake_isDead(Snake* snake, Snake* other, SDL_Rect* walls)
 {
-    return detectWallsCollision(snake, walls) || detectTailCollision(snake);
+    return detectWallsCollision(snake, walls) || detectTailCollision(snake, NULL) ||
+           (other != NULL && detectTailCollision(snake, other)) ||
+           (other != NULL && Math_detectCollision(snake->head, other->head));
 }
 
 void Snake_eat(Snake* snake)

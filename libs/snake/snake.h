@@ -38,5 +38,5 @@ void Snake_eat(Snake* snake);
 // check if the snake dead or not
 // the snake is dead if he hits a wall or his tail
 // return the state
-bool Snake_isDead(Snake* snake, SDL_Rect* walls);
+bool Snake_isDead(Snake* snake, Snake* other, SDL_Rect* walls);
 

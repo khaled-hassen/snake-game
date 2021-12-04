@@ -23,15 +23,13 @@ Apple* Apple_Create()
 // helper function to check the collision between the apple and the snake's tail
 bool detectShapesCollision(Apple* apple, Tail* tail)
 {
-    // TODO fix: the program crashes when running this function many times
-    // return false;
     for (int i = 0; i < tail->length; ++i)
         if (Math_detectCollision(apple->shape, tail->blocks[i])) return true;
 
     return false;
 }
 
-void Apple_generatePosition(Apple* apple, SDL_Rect area, Snake* snake)
+void Apple_generatePosition(Apple* apple, SDL_Rect area, Snake* snake1, Snake* snake2)
 {
     // get the number of horizontal and vertical cells contained in the area
     int hCells = area.w / CELL_SIZE;
@@ -52,8 +50,10 @@ void Apple_generatePosition(Apple* apple, SDL_Rect area, Snake* snake)
         rect.x = randomX;
         rect.y = randomY;
     } while ((randomX == apple->lastPosition.x) && (randomY == apple->lastPosition.y)
-             || Math_detectCollision(rect, snake->head)
-             || detectShapesCollision(apple, snake->tail));
+             || Math_detectCollision(rect, snake1->head)
+             || detectShapesCollision(apple, snake1->tail)
+             || (snake2 != NULL && Math_detectCollision(rect, snake2->head))
+             || (snake2 != NULL && detectShapesCollision(apple, snake2->tail)));
 
     apple->shape.x = randomX;
     apple->shape.y = randomY;

@@ -81,35 +81,74 @@ int Game_getEvents(SDL_Event* event) { return SDL_PollEvent(event); }
 
 bool Game_exited(SDL_Event event) { return event.type == SDL_QUIT; }
 
-Vector Game_handleKeyboardInput(SDL_Event event)
+// Helper functions to get the direction
+Vector getUpDirection()
+{
+    Vector direction = { 0, -1 };
+    return direction;
+}
+
+Vector getDownDirection()
+{
+    Vector direction = { 0, 1 };
+    return direction;
+}
+
+
+Vector getLeftDirection()
+{
+    Vector direction = { -1, 0 };
+    return direction;
+}
+
+Vector getRightDirection()
+{
+    Vector direction = { 1, 0 };
+    return direction;
+}
+//
+
+Vector Game_handleKeyboardInput(SDL_Event event, bool second)
 {
     Vector direction = { 0, 0 };
     if (event.type != SDL_KEYDOWN) return direction;
 
-    switch (event.key.keysym.sym)
-    {
-        case SDLK_w:
-            direction.x = 0;
-            direction.y = -1;
-            break;
-
-        case SDLK_s:
-            direction.x = 0;
-            direction.y = 1;
-            break;
-
-        case SDLK_a:
-            direction.x = -1;
-            direction.y = 0;
-            break;
-
-        case SDLK_d:
-            direction.x = 1;
-            direction.y = 0;
-            break;
-        default:
-            break;
-    }
+    if (second)
+        switch (event.key.keysym.sym)
+        {
+            case SDLK_UP:
+                direction = getUpDirection();
+                break;
+            case SDLK_DOWN:
+                direction = getDownDirection();
+                break;
+            case SDLK_LEFT:
+                direction = getLeftDirection();
+                break;
+            case SDLK_RIGHT:
+                direction = getRightDirection();
+                break;
+            default:
+                break;
+        }
+    else
+        switch (event.key.keysym.sym)
+        {
+            case SDLK_w:
+                direction = getUpDirection();
+                break;
+            case SDLK_s:
+                direction = getDownDirection();
+                break;
+            case SDLK_a:
+                direction = getLeftDirection();
+                break;
+            case SDLK_d:
+                direction = getRightDirection();
+                break;
+            default:
+                break;
+        }
 
     return direction;
 }

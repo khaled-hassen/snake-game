@@ -42,23 +42,21 @@ int main(int argc, char* argv[])
         {
             if (snake1 == NULL)
             {
-                // snake1 = Snake_create(movingArea.x, movingArea.y, game->screen, O_RIGHT);
-                snake1 = Snake_create(movingArea.w + movingArea.x, movingArea.h + movingArea.y,game->screen, O_LEFT);
+                snake1 = Snake_create(movingArea.x, movingArea.y, game->screen, O_RIGHT);
                 if (snake1 == NULL) return 1;
             }
 
             if (game->mode == GM_MULTI && snake2 == NULL)
             {
-                snake2 = Snake_create(movingArea.w, movingArea.y, NULL, O_LEFT);
+                snake2 = Snake_create(movingArea.w + movingArea.x, movingArea.h + movingArea.y, game->screen, O_LEFT);
                 if (snake2 == NULL) return 1;
             }
-
 
             if (apple == NULL)
             {
                 apple = Apple_Create();
                 if (apple == NULL) return 1;
-                Apple_generatePosition(apple, movingArea, snake1);
+                Apple_generatePosition(apple, movingArea, snake1, snake2);
             }
 
             movingArea = Game_drawBoard(game, walls);
@@ -68,19 +66,34 @@ int main(int argc, char* argv[])
             if (Math_detectCollision(snake1->head, apple->shape))
             {
                 Snake_eat(snake1);
-                Apple_generatePosition(apple, movingArea, snake1);
+                Apple_generatePosition(apple, movingArea, snake1, snake2);
             }
 
-            snake1->direction = Game_handleKeyboardInput(event);
+            if (snake2 != NULL && Math_detectCollision(snake2->head, apple->shape))
+            {
+                Snake_eat(snake2);
+                Apple_generatePosition(apple, movingArea, snake1, snake2);
+            }
+
+            snake1->direction = Game_handleKeyboardInput(event, false);
             Snake_turn(snake1);
             Snake_move(game->screen, snake1, frames);
 
-            if (Snake_isDead(snake1, walls))
+            if (snake2 != NULL)
             {
+                snake2->direction = Game_handleKeyboardInput(event, true);
+                Snake_turn(snake2);
+                Snake_move(game->screen, snake2, frames);
+            }
+
+            if (Snake_isDead(snake1, snake2, walls) || (snake2 != NULL && Snake_isDead(snake2, snake1, walls)))
+            {
+                // TODO update to handle snake 2
                 game->mode = GM_NONE;
                 score = snake1->score;
                 Game_saveBestScore(snake1->score);
                 Snake_destroy(&snake1);
+                if (snake2 != NULL) Snake_destroy(&snake2);
                 Apple_destroy(&apple);
             }
             else Game_renderScore(game, snake1->score);

@@ -17,7 +17,7 @@ Apple* Apple_Create();
 
 // generate and place the apple in a random place inside the given area
 // and prevent it from colliding with head the snake
-void Apple_generatePosition(Apple* apple, SDL_Rect area, Snake* snake);
+void Apple_generatePosition(Apple* apple, SDL_Rect area, Snake* snake1, Snake* snake2);
 
 void Apple_draw(SDL_Surface* screen, Apple* apple);
 
