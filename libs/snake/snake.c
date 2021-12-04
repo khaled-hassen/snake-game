@@ -46,7 +46,7 @@ void Snake_move(SDL_Surface* screen, Snake* snake, int frames)
         snake->head.x += snake->velocity.x;
         snake->head.y += snake->velocity.y;
     }
-    SDL_FillRect(screen, &snake->head, snake->color);
+    SDL_FillRect(screen, &snake->head, SDL_MapRGB(screen->format, 0xFF, 0xFF, 0xFF));
     Tail_render(screen, snake->tail, snake->color);
 }
 
