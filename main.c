@@ -23,7 +23,8 @@ int main(int argc, char* argv[])
     bool quit = false;
     Timer frameTime = 0;
     SDL_Event event;
-    int score = 0;
+    int score1 = 0;
+    int score2 = 0;
 
     // needs to be initialized in order to randomly generate the apples
     Math_initSeed();
@@ -37,7 +38,7 @@ int main(int argc, char* argv[])
 
         frames++;
         frameTime = Game_getTicks();
-        if (game->mode == GM_NONE) GameMode_drawMenu(game->screen, game->font, menuItems, score);
+        if (game->mode == GM_NONE) GameMode_drawMenu(game->screen, game->font, menuItems, score1, score2);
         else
         {
             if (snake1 == NULL)
@@ -88,15 +89,15 @@ int main(int argc, char* argv[])
 
             if (Snake_isDead(snake1, snake2, walls) || (snake2 != NULL && Snake_isDead(snake2, snake1, walls)))
             {
-                // TODO update to handle snake 2
                 game->mode = GM_NONE;
-                score = snake1->score;
-                Game_saveBestScore(snake1->score);
+                score1 = snake1->score;
+                score2 = snake2 == NULL ? 0 : snake2->score;
+                Game_saveBestScores(score1, score2);
                 Snake_destroy(&snake1);
                 if (snake2 != NULL) Snake_destroy(&snake2);
                 Apple_destroy(&apple);
             }
-            else Game_renderScore(game, snake1->score);
+            else Game_renderScore(game, snake1->score, snake2 == NULL ? -1 : snake2->score);
         }
 
         frames %= MAX_FPS;

@@ -15,7 +15,8 @@ typedef struct
 {
     SDL_Surface* screen;
     TTF_Font* font;
-    SDL_Surface* scoreMessage;
+    SDL_Surface* player1Score;
+    SDL_Surface* player2Score;
     GameMode mode;
 } Game;
 
@@ -33,8 +34,8 @@ void Game_capFPS(Timer frameTime);
 // return the board moving area and store the walls variables
 SDL_Rect Game_drawBoard(Game* game, SDL_Rect walls[4]);
 
-// render the snake score
-void Game_renderScore(Game* game, int score);
+// render the players' scores (if score2 == -1 that means single player mode is active)
+void Game_renderScore(Game* game, int score1, int score2);
 
 // render changes
 void Game_update(Game* game);
@@ -56,4 +57,4 @@ bool Game_exited(SDL_Event event);
 void Game_close(Game** game);
 
 // saves the snake's best score
-void Game_saveBestScore(int score);
+void Game_saveBestScores(int score1, int score2);

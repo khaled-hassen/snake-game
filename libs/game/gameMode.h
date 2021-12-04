@@ -12,8 +12,8 @@ typedef enum
 // create the main menu items and stores them
 void GameMode_createMenuItems(SDL_Rect items[3]);
 
-// draws the game menu
-void GameMode_drawMenu(SDL_Surface* screen, TTF_Font* font, SDL_Rect menuItems[3], int score);
+// draws the game menu and best scores and last scores
+void GameMode_drawMenu(SDL_Surface* screen, TTF_Font* font, SDL_Rect menuItems[3], int score1, int score2);
 
 // get the game selected mode by handling the user mouse input
 // return the selected game mode

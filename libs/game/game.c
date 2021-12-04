@@ -19,7 +19,8 @@ Game* Game_init()
     }
 
     Game* game = (Game*) malloc(sizeof(Game));
-    game->scoreMessage = NULL;
+    game->player1Score = NULL;
+    game->player2Score = NULL;
     game->mode = GM_NONE;
 
     // to spawn the window at the center
@@ -28,7 +29,7 @@ Game* Game_init()
     if (screen == NULL) LOG_SDL_ERROR("Cannot create screen");
     SDL_WM_SetCaption("Snake game", NULL);
 
-    TTF_Font* font = TTF_OpenFont("robot.ttf", 28);
+    TTF_Font* font = TTF_OpenFont("robot.ttf", 25);
     if (font == NULL) LOG_TTF_ERROR("Cannot open font");
 
     game->screen = screen;
@@ -50,26 +51,44 @@ void Game_capFPS(Timer frameTime)
 void Game_close(Game** game)
 {
     TTF_CloseFont((*game)->font);
-    SDL_FreeSurface((*game)->scoreMessage);
+    SDL_FreeSurface((*game)->player1Score);
     SDL_Quit();
     free(*game);
     *game = NULL;
 }
 
-void Game_renderScore(Game* game, int score)
+void Game_renderScore(Game* game, int score1, int score2)
 {
-    char msg[100];
-    sprintf(msg, "Score: %d", score);
+    char msg1[50] = "";
+    sprintf(msg1, "Player 1 score: %d", score1);
     SDL_Color color = { 0xFF, 0xFF, 0xFF };
-    game->scoreMessage = TTF_RenderText_Solid(game->font, msg, color);
-    if (game->scoreMessage == NULL)
+    game->player1Score = TTF_RenderText_Solid(game->font, msg1, color);
+    if (game->player1Score == NULL)
     {
-        LOG_TTF_ERROR("Cannot render scoreMessage");
+        LOG_TTF_ERROR("Cannot render player1Score");
         return;
     }
 
+    char msg2[50] = "";
+    if (score2 != -1)
+    {
+        sprintf(msg2, "Player 2 score: %d", score2);
+        game->player2Score = TTF_RenderText_Solid(game->font, msg2, color);
+        if (game->player2Score == NULL)
+        {
+            LOG_TTF_ERROR("Cannot render player1Score");
+            return;
+        }
+    }
+
     SDL_Rect offset = { 10, 10, 100, 30 };
-    SDL_BlitSurface(game->scoreMessage, NULL, game->screen, &offset);
+    SDL_BlitSurface(game->player1Score, NULL, game->screen, &offset);
+
+    if (score2 != -1)
+    {
+        offset.x = offset.w + 100;
+        SDL_BlitSurface(game->player2Score, NULL, game->screen, &offset);
+    }
 }
 
 void Game_update(Game* game)
@@ -182,14 +201,16 @@ SDL_Rect Game_drawBoard(Game* game, SDL_Rect walls[4])
     return movingArea;
 }
 
-void Game_saveBestScore(int score)
+void Game_saveBestScores(int score1, int score2)
 {
     char* filename = "save.txt";
     FILE* fp = fopen(filename, "r");
-    int bestScore = 0;
-    if (fp == NULL || fscanf(fp, "%d", &bestScore) != 1) bestScore = 0; // set the best score to 0 if there isn't one
+    int bestScore1 = 0, bestScore2 = 0;
+    // set the best scores to 0 if there aren't one
+    if (fp == NULL || fscanf(fp, "%d,%d", &bestScore1, &bestScore2) != 2) bestScore1 = bestScore2 = 0;
+
     fclose(fp);
     fp = fopen(filename, "w");
-    fprintf(fp, "%d", score > bestScore ? score : bestScore);
+    fprintf(fp, "%d,%d", score1 > bestScore1 ? score1 : bestScore1, score2 > bestScore2 ? score2 : bestScore2);
     fclose(fp);
 }

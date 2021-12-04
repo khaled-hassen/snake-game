@@ -27,18 +27,17 @@ GameMode GameMode_getMode(SDL_Rect menuItems[3], SDL_Event event)
     return GM_NONE;
 }
 
-
 // helper function to draw menu items
 void drawItems(SDL_Surface* screen, TTF_Font* font, SDL_Rect menuItems[3])
 {
-    char* labels[] = { "Single player", "Multi player", "Quit" };
+    char* labels[] = { "Single player", "Multiplayer", "Quit" };
     SDL_Color color = { 0, 0, 0 };
     for (int i = 0; i < 3; ++i)
     {
         SDL_Surface* message = TTF_RenderText_Solid(font, labels[i], color);
         if (message == NULL)
         {
-            LOG_TTF_ERROR("Cannot render scoreMessage");
+            LOG_TTF_ERROR("Cannot render player1Score");
             return;
         }
         SDL_FillRect(screen, &menuItems[i], SDL_MapRGB(screen->format, 0xFA, 0xED, 0xF0));
@@ -50,58 +49,63 @@ void drawItems(SDL_Surface* screen, TTF_Font* font, SDL_Rect menuItems[3])
 }
 
 // helper function to get the saved best score
-int getBestScore()
+void getBestScores(int* score1, int* score2)
 {
     FILE* fp = fopen("save.txt", "r");
-    if (fp == NULL) return 0;
-    int bestScore = 0;
-    if (fscanf(fp, "%d", &bestScore) != 1) bestScore = 0; // set the best score to 0 if there isn't one
+    if (fp == NULL) return;
+    int bestScore1 = 0, bestScore2 = 0;
+    if (fscanf(fp, "%d,%d", &bestScore1, &bestScore2) != 2) bestScore1 = bestScore2 = 0;
     fclose(fp);
-    return bestScore;
+    *score1 = bestScore1;
+    *score2 = bestScore2;
 }
 
-void GameMode_drawMenu(SDL_Surface* screen, TTF_Font* font, SDL_Rect menuItems[3], int score)
+// Helper function to display the game title
+void displayTitle(SDL_Surface* screen, TTF_Font* font)
 {
     SDL_Color color = { 0xFF, 0xFF, 0xFF };
     SDL_Surface* title = TTF_RenderText_Solid(font, "Snake game", color);
     if (title == NULL)
     {
-        LOG_TTF_ERROR("Cannot render scoreMessage");
+        LOG_TTF_ERROR("Cannot render game title");
         return;
     }
     SDL_Rect titleOffset = { SCREEN_WIDTH / 3 - title->clip_rect.w / 3, 50,
                              title->clip_rect.w, title->clip_rect.h };
+    SDL_BlitSurface(title, NULL, screen, &titleOffset);
+}
 
-    char scoreMsg[20] = "";
-    sprintf(scoreMsg, "Score: %d", score);
+// Helper function to display score
+void displayScore(SDL_Surface* screen, TTF_Font* font, char* msg, int score, int y)
+{
+    SDL_Color color = { 0xFF, 0xFF, 0xFF };
+
+    char scoreMsg[50] = "";
+    sprintf(scoreMsg, "%s: %d", msg, score);
     SDL_Surface* scoreSurface = TTF_RenderText_Solid(font, scoreMsg, color);
     if (scoreSurface == NULL)
     {
-        LOG_TTF_ERROR("Cannot render scoreMessage");
+        LOG_TTF_ERROR("Cannot render message");
         return;
     }
-    SDL_Rect scoreOffset = { 5 * SCREEN_WIDTH / 6 - 5 * scoreSurface->clip_rect.w / 6, 50,
-                             scoreSurface->clip_rect.w, scoreSurface->clip_rect.h };
 
-    char bestScore[20] = "";
-    sprintf(bestScore, "Best Score: %d", getBestScore());
-    SDL_Surface* bestScoreSurface = TTF_RenderText_Solid(font, bestScore, color);
-    if (bestScoreSurface == NULL)
-    {
-        LOG_TTF_ERROR("Cannot render scoreMessage");
-        return;
-    }
-    SDL_Rect bestScoreOffset = { 5 * SCREEN_WIDTH / 6 - 5 * bestScoreSurface->clip_rect.w / 6,
-                                 80 + scoreSurface->clip_rect.h,
-                                 bestScoreSurface->clip_rect.w, bestScoreSurface->clip_rect.h };
+    SDL_Rect offset = { 5 * SCREEN_WIDTH / 6 - 5 * scoreSurface->clip_rect.w / 6, y,
+                        scoreSurface->clip_rect.w, scoreSurface->clip_rect.h };
+
+    SDL_BlitSurface(scoreSurface, NULL, screen, &offset);
+}
+
+void GameMode_drawMenu(SDL_Surface* screen, TTF_Font* font, SDL_Rect menuItems[3], int score1, int score2)
+{
+    int bestScore1 = 0, bestScore2 = 0;
+    getBestScores(&bestScore1, &bestScore2);
 
     SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 48, 48, 48));
-    // Display the game's title
-    SDL_BlitSurface(title, NULL, screen, &titleOffset);
-    // Display the game's saved best score
-    SDL_BlitSurface(bestScoreSurface, NULL, screen, &bestScoreOffset);
-    // Display the player's Score
-    SDL_BlitSurface(scoreSurface, NULL, screen, &scoreOffset);
+    displayTitle(screen, font);
+    displayScore(screen, font, "Player1 score", score1, 50);
+    displayScore(screen, font, "Player1 best score", bestScore1, 100);
+    displayScore(screen, font, "Player2 score", score2, 150);
+    displayScore(screen, font, "Player2 best score", bestScore2, 200);
 
     drawItems(screen, font, menuItems);
 }
