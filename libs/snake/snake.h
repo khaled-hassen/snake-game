@@ -16,6 +16,7 @@ typedef struct
     Tail* tail;
     int score;
     Vector velocity;
+    Vector direction;
 } Snake;
 
 // create the snake
@@ -25,10 +26,10 @@ Snake* Snake_create(int x, int y);
 void Snake_move(SDL_Surface* screen, Snake* snake, int frames);
 
 // turn the snake to the specified direction
-void Snake_turn(Snake* snake, Vector direction);
+void Snake_turn(Snake* snake);
 
 // free the snake from memory
-void Snake_destroy(Snake* snake);
+void Snake_destroy(Snake** snake);
 
 // increases the snake's score and length when eating an apple
 void Snake_eat(Snake* snake);

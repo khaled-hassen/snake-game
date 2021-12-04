@@ -15,7 +15,9 @@ Snake* Snake_create(int x, int y)
 
     snake->tail = Tail_create(x, y, SNAKE_WIDTH);
     Vector velocity = { SNAKE_BASE_SPEED, 0 };
+    Vector direction = { 1, 0 };
     snake->velocity = velocity;
+    snake->direction = direction;
     SDL_Rect head = { x + SNAKE_WIDTH * snake->tail->length, y, SNAKE_WIDTH, SNAKE_WIDTH };
     snake->head = head;
     snake->score = 0;
@@ -23,10 +25,11 @@ Snake* Snake_create(int x, int y)
     return snake;
 }
 
-void Snake_destroy(Snake* snake)
+void Snake_destroy(Snake** snake)
 {
-    Tail_destroy(snake->tail);
-    free(snake);
+    Tail_destroy((*snake)->tail);
+    free(*snake);
+    *snake = NULL;
 }
 
 void Snake_move(SDL_Surface* screen, Snake* snake, int frames)
@@ -43,17 +46,17 @@ void Snake_move(SDL_Surface* screen, Snake* snake, int frames)
     Tail_render(screen, snake->tail, color);
 }
 
-void Snake_turn(Snake* snake, Vector direction)
+void Snake_turn(Snake* snake)
 {
     // to prevent the snake from going back on his tail
-    if ((direction.x == 1 || direction.x == -1) && snake->tail->blocks[0].y == snake->head.y) return;
-    if ((direction.y == 1 || direction.y == -1) && snake->tail->blocks[0].x == snake->head.x) return;
+    if ((snake->direction.x == 1 || snake->direction.x == -1) && snake->tail->blocks[0].y == snake->head.y) return;
+    if ((snake->direction.y == 1 || snake->direction.y == -1) && snake->tail->blocks[0].x == snake->head.x) return;
 
-    if (direction.x != 0 || direction.y != 0)
+    if (snake->direction.x != 0 || snake->direction.y != 0)
     {
         // change the snake velocity which depends on speed and direction
-        snake->velocity.x = SNAKE_BASE_SPEED * direction.x;
-        snake->velocity.y = SNAKE_BASE_SPEED * direction.y;
+        snake->velocity.x = SNAKE_BASE_SPEED * snake->direction.x;
+        snake->velocity.y = SNAKE_BASE_SPEED * snake->direction.y;
     }
 }
 

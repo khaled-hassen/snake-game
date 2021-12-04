@@ -1,20 +1,8 @@
 #include "game.h"
 #include <stdio.h>
 #include <math.h>
+#include "../utils/math/math.h"
 #include "../../debug/debug.h"
-
-// helper function to create menu items
-void createMenuItems(SDL_Rect items[3])
-{
-    int itemWidth = 250, itemHeight = 80;
-    int itemsGap = itemHeight + 50;
-    int startY = 150;
-    for (int i = 0; i < 3; ++i)
-    {
-        SDL_Rect item = { SCREEN_WIDTH / 2 - itemWidth / 2, startY + itemsGap * i, itemWidth, itemHeight };
-        items[i] = item;
-    }
-}
 
 Game* Game_init()
 {
@@ -32,7 +20,7 @@ Game* Game_init()
 
     Game* game = (Game*) malloc(sizeof(Game));
     game->scoreMessage = NULL;
-    createMenuItems(game->menuItems);
+    game->mode = NONE;
 
     // to spawn the window at the center
     setenv("SDL_VIDEO_CENTERED", "SDL_VIDEO_CENTERED", 1);
@@ -59,12 +47,13 @@ void Game_capFPS(Timer frameTime)
     if (deltaTime < frameRenderTime) SDL_Delay(floor(frameRenderTime - deltaTime));
 }
 
-void Game_close(Game* game)
+void Game_close(Game** game)
 {
-    TTF_CloseFont(game->font);
-    SDL_FreeSurface(game->scoreMessage);
+    TTF_CloseFont((*game)->font);
+    SDL_FreeSurface((*game)->scoreMessage);
     SDL_Quit();
-    free(game);
+    free(*game);
+    *game = NULL;
 }
 
 void Game_renderScore(Game* game, int score)
@@ -125,20 +114,6 @@ Vector Game_handleKeyboardInput(SDL_Event event)
     return direction;
 }
 
-MenuItem Game_handleMouseInput(Game* game, SDL_Event event)
-{
-    if (event.type != SDL_MOUSEBUTTONDOWN) return NONE;
-
-    int x = event.motion.x, y = event.motion.y;
-    for (MenuItem i = SINGLE; i < NONE; ++i)
-    {
-        if (x >= game->menuItems[i].x && x <= (game->menuItems[i].x + game->menuItems[i].w)
-            && y >= game->menuItems[i].y && y <= (game->menuItems[i].y + game->menuItems[i].h))
-            return i;
-    }
-    return NONE;
-}
-
 SDL_Rect Game_drawBoard(Game* game, SDL_Rect walls[4])
 {
     SDL_FillRect(game->screen, NULL, SDL_MapRGB(game->screen->format, 0, 0, 0));
@@ -168,42 +143,14 @@ SDL_Rect Game_drawBoard(Game* game, SDL_Rect walls[4])
     return movingArea;
 }
 
-// helper function to draw menu items
-void drawItems(Game* game)
+void Game_saveBestScore(int score)
 {
-    char* labels[] = { "Single player", "Multi player", "Quit" };
-    SDL_Color color = { 0, 0, 0 };
-    for (int i = 0; i < 3; ++i)
-    {
-        SDL_Surface* message = TTF_RenderText_Solid(game->font, labels[i], color);
-        if (message == NULL)
-        {
-            LOG_TTF_ERROR("Cannot render scoreMessage");
-            return;
-        }
-        SDL_Rect item = game->menuItems[i];
-        SDL_FillRect(game->screen, &item, SDL_MapRGB(game->screen->format, 0xFA, 0xED, 0xF0));
-        SDL_Rect offset2 = { SCREEN_WIDTH / 2 - message->clip_rect.w / 2,
-                             item.y + item.h / 2 - message->clip_rect.h / 2,
-                             message->clip_rect.w, message->clip_rect.h };
-        SDL_BlitSurface(message, NULL, game->screen, &offset2);
-    }
-}
-
-void Game_drawMenu(Game* game)
-{
-    SDL_Color color = { 0xFF, 0xFF, 0xFF };
-    SDL_Surface* message = TTF_RenderText_Solid(game->font, "Snake game", color);
-    if (message == NULL)
-    {
-        LOG_TTF_ERROR("Cannot render scoreMessage");
-        return;
-    }
-
-    SDL_FillRect(game->screen, NULL, SDL_MapRGB(game->screen->format, 48, 48, 48));
-    // Draw game name
-    SDL_Rect offset = { SCREEN_WIDTH / 2 - message->clip_rect.w / 2, 50, message->clip_rect.w, message->clip_rect.h };
-    SDL_BlitSurface(message, NULL, game->screen, &offset);
-
-    drawItems(game);
+    char* filename = "save.txt";
+    FILE* fp = fopen(filename, "r");
+    int bestScore = 0;
+    if (fp == NULL || fscanf(fp, "%d", &bestScore) != 1) bestScore = 0; // set the best score to 0 if there isn't one
+    fclose(fp);
+    fp = fopen(filename, "w");
+    fprintf(fp, "%d", score > bestScore ? score : bestScore);
+    fclose(fp);
 }

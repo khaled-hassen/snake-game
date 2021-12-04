@@ -66,4 +66,8 @@ void Apple_draw(SDL_Surface* screen, Apple* apple)
     SDL_FillRect(screen, &apple->shape, SDL_MapRGB(screen->format, 0xFF, 0, 0));
 }
 
-void Apple_Destroy(Apple* apple) { free(apple); }
+void Apple_destroy(Apple** apple)
+{
+    free(*apple);
+    *apple = NULL;
+}

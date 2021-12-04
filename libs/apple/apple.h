@@ -21,4 +21,4 @@ void Apple_generatePosition(Apple* apple, SDL_Rect area, Snake* snake);
 
 void Apple_draw(SDL_Surface* screen, Apple* apple);
 
-void Apple_Destroy(Apple* apple);
+void Apple_destroy(Apple** apple);
