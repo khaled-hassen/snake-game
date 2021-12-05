@@ -1,8 +1,8 @@
 #include "libs/game/game.h"
-#include "libs/utils/math/math.h"
-#include "debug/debug.h"
 #include "libs/snake/snake.h"
 #include "libs/apple/apple.h"
+#include "libs/utils/math/math.h"
+#include "debug/debug.h"
 
 int main(int argc, char* argv[])
 {

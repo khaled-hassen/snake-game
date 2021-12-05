@@ -20,8 +20,8 @@ typedef struct
     GameMode mode;
 } Game;
 
-// initialize the game and sdl_ttf
-// returns the game screen and font
+// initialize sdl, sdl_ttf and create a new game
+// returns the game
 Game* Game_init();
 
 // return the time since the game starts in ms
@@ -31,7 +31,7 @@ Timer Game_getTicks();
 void Game_capFPS(Timer frameTime);
 
 // draw the game board
-// return the board moving area and store the walls variables
+// return the board moving area and store the walls' shapes
 SDL_Rect Game_drawBoard(Game* game, SDL_Rect walls[4]);
 
 // render the players' scores (if score2 == -1 that means single player mode is active)
@@ -40,7 +40,6 @@ void Game_renderScore(Game* game, int score1, int score2);
 // render changes
 void Game_update(Game* game);
 
-// get keyboard events
 // return the number of events
 int Game_getEvents(SDL_Event* event);
 

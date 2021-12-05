@@ -18,11 +18,11 @@ Tail* Tail_create(int x, int y, int width, Orientation ori);
 // free the memory used by the tail
 void Tail_destroy(Tail* tail);
 
-// draw the snake to the screen
+// draw the snake's tail to the screen
 void Tail_render(SDL_Surface* screen, Tail* tail, Uint32 color);
 
-// move the snake according the passed velocity
+// move the snake's tail according to the head
 void Tail_move(SDL_Rect head, Tail* tail);
 
-// increase the tail length and return the new tail
+// increase the tail length
 void Tail_increment(Tail* tail);

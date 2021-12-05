@@ -23,10 +23,10 @@ typedef struct
 // create the snake and orientate it right or left
 Snake* Snake_create(int x, int y, SDL_Surface* screen, Orientation ori);
 
-// move the snake according the velocity
+// move the snake according to its velocity (the frames param is used to move the snake fps independently)
 void Snake_move(SDL_Surface* screen, Snake* snake, int frames);
 
-// turn the snake to the specified direction
+// turn the snake using his direction
 void Snake_turn(Snake* snake);
 
 // free the snake from memory
@@ -36,7 +36,7 @@ void Snake_destroy(Snake** snake);
 void Snake_eat(Snake* snake);
 
 // check if the snake dead or not
-// the snake is dead if he hits a wall or his tail
+// the snake is dead if he hits a wall, his tail or another snake
 // return the state
 bool Snake_isDead(Snake* snake, Snake* other, SDL_Rect* walls);
 
