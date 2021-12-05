@@ -19,6 +19,8 @@ Apple* Apple_Create();
 // and prevent it from colliding with head the snake
 void Apple_generatePosition(Apple* apple, SDL_Rect area, Snake* snake1, Snake* snake2);
 
+// draws the apple to the screen
 void Apple_draw(SDL_Surface* screen, Apple* apple);
 
+// free the apple from memory
 void Apple_destroy(Apple** apple);

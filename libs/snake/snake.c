@@ -1,17 +1,12 @@
 #include "snake.h"
 #include "stdlib.h"
 #include "../utils/math/math.h"
-#include "../../debug/debug.h"
 
 
 Snake* Snake_create(int x, int y, SDL_Surface* screen, Orientation ori)
 {
     Snake* snake = (Snake*) malloc(sizeof(Snake));
-    if (snake == NULL)
-    {
-        LOG_ERROR("Cannot create snake");
-        return NULL;
-    }
+    if (snake == NULL) return NULL;
 
     int headX = x + ((ori == O_LEFT) ? -SNAKE_WIDTH * (TAIL_INITIAL_LENGTH + 1) : SNAKE_WIDTH * TAIL_INITIAL_LENGTH);
     int headY = y - (ori == O_LEFT ? SNAKE_WIDTH : 0);
